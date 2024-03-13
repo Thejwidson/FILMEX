@@ -38,7 +38,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-//Nie wiem czemu nie moge sie zalogowac na tego admina jak jest w bazie normalnie, moze ktos ogarnie help pls
+//ogarnac czemu nie dziala seedowanie
+/*
 using(var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
@@ -50,8 +51,11 @@ using(var scope = app.Services.CreateScope())
     {
         var adminUser = new User();
         adminUser.UserName = "Admin";
+        adminUser.FirstName = "Admin";
+        adminUser.LastName = "Admin";
         adminUser.Email = email;
         adminUser.EmailConfirmed = true;
+        
         
 
         await userManager.CreateAsync(adminUser,pwd);
@@ -60,5 +64,6 @@ using(var scope = app.Services.CreateScope())
     }
 
 }
+*/
 
 app.Run();
