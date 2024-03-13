@@ -5,5 +5,7 @@
         
         public int? Length { get; set; }
 
+        public List<MovieCategory> Categories { get; set; } = new List<MovieCategory>();
+
     }
 }
