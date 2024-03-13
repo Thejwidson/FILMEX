@@ -1,4 +1,5 @@
 using FILMEX.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -23,6 +24,12 @@ namespace FILMEX.Controllers
             return View();
         }
 
+        /*[Authorize(Roles = "Admin")]
+        public IActionResult AdminMenu() 
+        {
+            return View();
+        }
+        */
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
