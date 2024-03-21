@@ -39,7 +39,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 //ogarnac czemu nie dziala seedowanie
-/*
+
 using(var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
@@ -64,6 +64,6 @@ using(var scope = app.Services.CreateScope())
     }
 
 }
-*/
+
 
 app.Run();
