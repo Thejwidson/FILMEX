@@ -7,59 +7,40 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-<style>
-    .movie-tile {
-        display: inline-block;
-        width: 200px; /* szerokosc */
-        margin-right: 10px; /* Odleglosc miedzy kafelkami z filmem */
-        cursor: pointer; /* zmien na 'pointer' podczas trzymania myszki nad filmem */
-    }
-
-    .movie-image {
-        width: 100%;
-        height: auto;
-        border-radius: 5px;
-    }
-
-    .movie-title {
-        margin-top: 5px;
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .movie-description {
-        font-size: 14px;
-        color: #555;
-    }
-</style>
-
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h2>Top 6 Movies</h2>
             <div class="row">
                 @for (int i = 1; i <= 6; i++)
-                { // podmienic na dane z db
-                    <div class="movie-tile">
-                        <div class="card">
-                            <img src="https://fwcdn.pl/fpo/47/87/10034787/8112071.6.jpg" class="card-img-top movie-image" alt="Movie Image">
-                            <div class="card-body">
-                                <h5 class="card-title movie-title">Movie Title @i</h5>
-                                <p class="card-text movie-description">Description of the movie.</p>
+                { // podmienic na dane z bazy danych
+                        <div class="col-md-2"> <!-- Adjust the column size based on your preference -->
+                            <div class="card">
+                                <img src="https://fwcdn.pl/fpo/47/87/10034787/8112071.6.jpg" class="card-img-top movie-image" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
                 }
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    .movie-image {
+        object-fit: cover; /* Maintain aspect ratio and cover entire area */
+    }
+</style>
+
 <script>
     // click handler
     document.querySelectorAll('.movie-tile').forEach(item => {
         item.addEventListener('click', event => {
-            alert('You clicked on ' + item.querySelector('.movie-title').innerText);
+            alert('You clicked on ' + item.querySelector('.card-title').innerText);
         });
     });
 </script>
