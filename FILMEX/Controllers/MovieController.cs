@@ -153,5 +153,10 @@ namespace FILMEX.Controllers
         {
             return _context.Movies.Any(e => e.Id == id);
         }
+
+        public ActionResult Detail()
+        {
+            return View();
+        }
     }
 }
