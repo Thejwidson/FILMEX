@@ -9,6 +9,7 @@ using FILMEX.Data;
 using FILMEX.Models.Entities;
 using Microsoft.AspNetCore.Hosting;
 using FILMEX.Models;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace FILMEX.Controllers
 {
@@ -58,25 +59,37 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Length,Id,Title,Description,PublishDate,Rating")] Models.Movie movie)
+        public async Task<IActionResult> Create(Models.Movie movie)
         {
-            if (true) // true zamienic na ModelState.IsValid po tym jak spytam dawida jak to jest sprawdzane
+            if (ModelState.IsValid)
             {
+                Models.Entities.Movie movieEntity = new Models.Entities.Movie();
+                movieEntity.Title = movie.Title;
+                movieEntity.Description = movie.Description;
+                movieEntity.PublishDate = movie.PublishDate;
+                movieEntity.Rating = movie.Rating;
+
                 if (movie.CoverImage != null)
                 {
                     string folder = "movies/cover";
-                    folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName;
+                    folder += Guid.NewGuid().ToString() + Path.GetExtension(movie.CoverImage.FileName);
                     string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder);
 
-                    await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+                    using (var fileStream = new FileStream(serverFolder, FileMode.Create))
+                    {
+                        await movie.CoverImage.CopyToAsync(fileStream);
+                    }
+
+                    movieEntity.AttachmentSource = folder;
                 }
 
-                _context.Add(movie);
+                _context.Add(movieEntity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
         }
+
 
         // GET: Movie/Edit/5
         public async Task<IActionResult> Edit(int? id)
