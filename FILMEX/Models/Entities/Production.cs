@@ -7,8 +7,6 @@ namespace FILMEX.Models.Entities
 
         public string Title { get; set; } = default!;
 
-        public string 
-
         public string Description { get; set; } = String.Empty;
 
         public DateTime PublishDate { get; set; }
