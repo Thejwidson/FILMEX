@@ -1,4 +1,7 @@
 ﻿
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace FILMEX.Models.Entities
 {
     public abstract class Production
@@ -6,8 +9,6 @@ namespace FILMEX.Models.Entities
         public int Id { get; set; }
 
         public string Title { get; set; } = default!;
-
-        public string 
 
         public string Description { get; set; } = String.Empty;
 

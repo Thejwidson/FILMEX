@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FILMEX.Data;
 using FILMEX.Models.Entities;
+using Microsoft.AspNetCore.Hosting;
+using FILMEX.Models;
 
 namespace FILMEX.Controllers
 {
     public class MovieController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironemt;
 
-        public MovieController(ApplicationDbContext context)
+        public MovieController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironemt)
         {
             _context = context;
+            _webHostEnvironemt = webHostEnvironemt;
         }
 
         // GET: Movie
@@ -54,10 +58,19 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Length,Id,Title,Description,PublishDate,Rating")] Movie movie)
+        public async Task<IActionResult> Create([Bind("Length,Id,Title,Description,PublishDate,Rating")] Models.Movie movie)
         {
-            if (ModelState.IsValid)
+            if (true) // true zamienic na ModelState.IsValid po tym jak spytam dawida jak to jest sprawdzane
             {
+                if (movie.CoverImage != null)
+                {
+                    string folder = "movies/cover";
+                    folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName;
+                    string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder);
+
+                    await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+                }
+
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +99,7 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Length,Id,Title,Description,PublishDate,Rating")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("Length,Id,Title,Description,PublishDate,Rating")] Models.Movie movie)
         {
             if (id != movie.Id)
             {
