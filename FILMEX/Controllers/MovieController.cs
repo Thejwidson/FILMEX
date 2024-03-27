@@ -72,13 +72,10 @@ namespace FILMEX.Controllers
                 if (movie.CoverImage != null)
                 {
                     string folder = "movies/cover";
-                    folder += Guid.NewGuid().ToString() + Path.GetExtension(movie.CoverImage.FileName);
+                    folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName;
                     string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder);
 
-                    using (var fileStream = new FileStream(serverFolder, FileMode.Create))
-                    {
-                        await movie.CoverImage.CopyToAsync(fileStream);
-                    }
+                    await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
 
                     movieEntity.AttachmentSource = folder;
                 }
