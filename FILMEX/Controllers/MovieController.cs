@@ -177,9 +177,14 @@ namespace FILMEX.Controllers
             return _context.Movies.Any(e => e.Id == id);
         }
 
-        public ActionResult Detail()
+        public IActionResult Detail(int id)
         {
-            return View();
+            var movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            return View(movie);
         }
     }
 }
