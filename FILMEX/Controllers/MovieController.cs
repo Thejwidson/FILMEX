@@ -179,7 +179,7 @@ namespace FILMEX.Controllers
 
         public IActionResult Detail(int id)
         {
-            var movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+            var movie = _context.Movies.Include(m => m.Comments).FirstOrDefault(m => m.Id == id);
             if (movie == null)
             {
                 return NotFound();
