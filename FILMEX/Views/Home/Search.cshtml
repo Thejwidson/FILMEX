@@ -1,0 +1,74 @@
+﻿@using FILMEX.Models
+@model FILMEX.Models.SearchViewModel
+@{
+    ViewData["Title"] = "SearchResults";
+}
+
+
+<h2>Aktorzy:</h2>
+@if (Model.Actors.Any())
+{
+<ul>
+    @foreach (var actor in Model.Actors)
+    {
+        
+        <li>@actor.Name</li>
+    }
+    </ul>
+}
+else
+{
+   <p>No Search Results Found</p>
+}
+
+<h2>Filmy:</h2>
+@if(Model.Movies.Any()){
+<ul>
+    @foreach (var movie in Model.Movies)
+    {
+        <li>@movie.Title</li>
+    }
+    </ul>
+}
+else
+{
+    <p>No Search Results Found</p>
+}
+
+<h2>Serie:</h2>
+@if(Model.Series.Any()){
+<ul>
+    @foreach (var serie in Model.Series)
+    {
+        <li>@serie.Title</li>
+    }
+    </ul>
+}
+else
+{
+    <p>No Search Results Found</p>
+}
+<p>Just dont break the site ❤.</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Actors)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Actors)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+              
+            </tr>
+        }
+    </tbody>
+</table>
