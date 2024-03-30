@@ -4,6 +4,7 @@ using FILMEX.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FILMEX.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240329180112_[MigrationName]")]
+    partial class MigrationName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,6 +66,9 @@ namespace FILMEX.Migrations
                     b.Property<int?>("Age")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -79,6 +85,8 @@ namespace FILMEX.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CommentId");
+
                     b.ToTable("Actors");
                 });
 
@@ -94,8 +102,22 @@ namespace FILMEX.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("MovieId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("PublishDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -166,6 +188,9 @@ namespace FILMEX.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
@@ -179,6 +204,8 @@ namespace FILMEX.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
 
                     b.HasIndex("MovieId");
 
@@ -487,6 +514,13 @@ namespace FILMEX.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FILMEX.Models.Entities.Actor", b =>
+                {
+                    b.HasOne("FILMEX.Models.Entities.Comment", null)
+                        .WithMany("Actors")
+                        .HasForeignKey("CommentId");
+                });
+
             modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
                 {
                     b.HasOne("FILMEX.Models.Entities.Movie", null)
@@ -496,6 +530,10 @@ namespace FILMEX.Migrations
 
             modelBuilder.Entity("FILMEX.Models.Entities.Review", b =>
                 {
+                    b.HasOne("FILMEX.Models.Entities.Comment", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("CommentId");
+
                     b.HasOne("FILMEX.Models.Entities.Movie", null)
                         .WithMany("Reviews")
                         .HasForeignKey("MovieId");
@@ -569,6 +607,13 @@ namespace FILMEX.Migrations
                         .HasForeignKey("MoviesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
+                {
+                    b.Navigation("Actors");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Movie", b =>

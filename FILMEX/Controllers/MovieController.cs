@@ -71,7 +71,7 @@ namespace FILMEX.Controllers
 
                 if (movie.CoverImage != null)
                 {
-                    string folder = "movies/cover";
+                    string folder = "/movies/cover";
                     folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName;
                     string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder);
 
@@ -185,6 +185,23 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
             return View(movie);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewComment(int id, string newComment)
+        {
+            var movie = await _context.Movies.Include(m => m.Comments).FirstOrDefaultAsync(m => m.Id == id);
+            if (movie == null)
+                return NotFound();
+
+            if (!string.IsNullOrEmpty(newComment))
+            {
+                var comment = new Comment { Content = newComment };
+                movie.Comments.Add(comment);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Detail", "Movie", new { id });
         }
     }
 }
