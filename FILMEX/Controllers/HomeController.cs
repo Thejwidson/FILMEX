@@ -32,6 +32,27 @@ namespace FILMEX.Controllers
             return View();
         }
 
+        public IActionResult Search(string searchPhrase)
+        {
+            var viewModel = new SearchViewModel
+            {
+                Actors = _context.Actors.Where(a => a.Name.Contains(searchPhrase) || a.LastName.Contains(searchPhrase)).ToList(),
+                Movies = _context.Movies.Where(m => m.Title.Contains(searchPhrase)).ToList(),
+                Series = _context.Series.Where(s => s.Title.Contains(searchPhrase)).ToList(),
+            };
+
+            if (!String.IsNullOrEmpty(searchPhrase))
+            {
+                Console.WriteLine(searchPhrase);
+            }    
+            else 
+            {
+                Console.WriteLine("PUSTE");
+            }    
+
+            return View(viewModel);
+        }
+
         /*[Authorize(Roles = "Admin")]
         public IActionResult AdminMenu() 
         {
