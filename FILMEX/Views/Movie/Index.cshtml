@@ -6,9 +6,7 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -26,6 +24,11 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Rating)
+            </th>
+            <th>
+                <a asp-action="Create" class="btn btn-sm btn-success">
+                    <i class="fa-solid fa-plus"></i> New
+                </a>
             </th>
             <th></th>
         </tr>
