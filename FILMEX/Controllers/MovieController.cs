@@ -109,7 +109,7 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Length,Id,Title,Description,PublishDate,Rating")] Models.Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("Length,Id,Title,Description,PublishDate,Rating,AttachmentSource")] Models.Entities.Movie movie)
         {
             if (id != movie.Id)
             {
@@ -120,8 +120,9 @@ namespace FILMEX.Controllers
             {
                 try
                 {
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
+                    _context.Update(movie); // Update the movie entity
+                    await _context.SaveChangesAsync(); // Save changes to the database
+                    return RedirectToAction(nameof(Index)); // Redirect to index page after successful update
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -134,10 +135,14 @@ namespace FILMEX.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                // do something
             }
             return View(movie);
         }
+
 
         // GET: Movie/Delete/5
         public async Task<IActionResult> Delete(int? id)
