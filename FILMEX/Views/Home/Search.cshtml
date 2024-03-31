@@ -28,7 +28,8 @@ else
     {
         <li>@movie.Title</li>
     }
-    </ul>
+    </ul> 
+        
 }
 else
 {
@@ -48,27 +49,5 @@ else
 {
     <p>No Search Results Found</p>
 }
-<p>Just dont break the site ❤.</p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Actors)
-            </th>
-           
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Actors)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-              
-            </tr>
-        }
-    </tbody>
-</table>
+
