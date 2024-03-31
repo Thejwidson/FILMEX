@@ -1,5 +1,11 @@
-﻿@{
+﻿@using FILMEX.Models.Entities
+
+@{
     ViewData["Title"] = "Home Page";
+}
+
+@{
+    int i = 0;
 }
 
 <div class="text-center">
@@ -9,21 +15,23 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
-            <h2>Top 6 Movies</h2>
+        <div class="col-md-12"> 
+            <h2>Top Movies</h2>
             <div class="row">
-                @for (int i = 1; i <= 6; i++)
-                { // podmienic na dane z bazy danych
-                    <div class="col-md-2">
-                        <div class="card">
-                            <img src="https://fwcdn.pl/fpo/47/87/10034787/8112071.6.jpg" class="card-img-top movie-image" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="https://localhost:7149/Movie/Detail" class="btn btn-primary">See details</a>
-                            </div>
+                @foreach (var movie in Model)
+                {
+                if (i >= 6) break;
+                <div class="col-md-2">
+                    <div class="card">
+                        <img src="@movie.AttachmentSource" class="card-img-top movie-image" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">@movie.Title</h5>
+                            <p class="card-text">@movie.Description</p>
+                            <a href="@Url.Action("Detail", "Movie", new { id = movie.Id })" class="btn btn-primary">See details</a>
                         </div>
                     </div>
+                </div>
+                i++;
                 }
             </div>
         </div>
@@ -35,12 +43,3 @@
         object-fit: cover; /* Maintain aspect ratio and cover entire area */
     }
 </style>
-
-<script>
-    // click handler
-    document.querySelectorAll('.movie-tile').forEach(item => {
-        item.addEventListener('click', event => {
-            alert('You clicked on ' + item.querySelector('.card-title').innerText);
-        });
-    });
-</script>

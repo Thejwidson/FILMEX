@@ -1,4 +1,5 @@
-﻿@{
+﻿@model FILMEX.Models.Entities.Movie
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -6,9 +7,36 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Tytul filmu</h2>
-
+<h2>@Model.Title</h2>
 <div style="display: flex; align-items: top;">
-    <img src="https://fwcdn.pl/fpo/47/87/10034787/8112071.6.jpg" class="img-thumbnail" alt="..." style="margin-right: 10px;">
-        <p>opisu filmu</p>
+    <img src="/@Model.AttachmentSource" class="img-thumbnail" alt="Movie Cover" style="margin-right: 10px;">
+    <p>@Model.Description</p>
 </div>
+
+<h3>Comments</h3>
+    @if (Model.Comments.Any())
+    {
+        <ul>
+        @foreach (var comment in Model.Comments)
+        {
+                <li>@comment.Content</li>
+        }
+        </ul>
+    }
+    else
+    {
+        <p>No comments available.</p>
+    }
+
+<!-- Form for adding comments -->
+<h3>Add a Comment</h3>
+<form asp-controller="Movie" asp-action="NewComment" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="form-group">
+        <label for="newComment">Comment:</label>
+        <textarea id="newComment" name="newComment" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Comment</button>
+</form>
+
+<a asp-action="Index">Back to List</a>

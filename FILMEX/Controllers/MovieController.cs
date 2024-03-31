@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FILMEX.Data;
 using FILMEX.Models.Entities;
+using Microsoft.AspNetCore.Hosting;
+using FILMEX.Models;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace FILMEX.Controllers
 {
     public class MovieController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironemt;
 
-        public MovieController(ApplicationDbContext context)
+        public MovieController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironemt)
         {
             _context = context;
+            _webHostEnvironemt = webHostEnvironemt;
         }
 
         // GET: Movie
@@ -54,16 +59,34 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Length,Id,Title,Description,PublishDate,Rating")] Movie movie)
+        public async Task<IActionResult> Create(Models.Movie movie)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(movie);
+                Models.Entities.Movie movieEntity = new Models.Entities.Movie();
+                movieEntity.Title = movie.Title;
+                movieEntity.Description = movie.Description;
+                movieEntity.PublishDate = movie.PublishDate;
+                movieEntity.Rating = movie.Rating;
+
+                if (movie.CoverImage != null)
+                {
+                    string folder = "/movies/cover";
+                    folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName;
+                    string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder);
+
+                    await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+
+                    movieEntity.AttachmentSource = folder;
+                }
+
+                _context.Add(movieEntity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
         }
+
 
         // GET: Movie/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -86,7 +109,7 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Length,Id,Title,Description,PublishDate,Rating")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("Length,Id,Title,Description,PublishDate,Rating,AttachmentSource")] Models.Entities.Movie movie)
         {
             if (id != movie.Id)
             {
@@ -97,8 +120,9 @@ namespace FILMEX.Controllers
             {
                 try
                 {
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
+                    _context.Update(movie); // Update the movie entity
+                    await _context.SaveChangesAsync(); // Save changes to the database
+                    return RedirectToAction(nameof(Index)); // Redirect to index page after successful update
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -111,10 +135,14 @@ namespace FILMEX.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                // do something
             }
             return View(movie);
         }
+
 
         // GET: Movie/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -154,9 +182,31 @@ namespace FILMEX.Controllers
             return _context.Movies.Any(e => e.Id == id);
         }
 
-        public ActionResult Detail()
+        public IActionResult Detail(int id)
         {
-            return View();
+            var movie = _context.Movies.Include(m => m.Comments).FirstOrDefault(m => m.Id == id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            return View(movie);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewComment(int id, string newComment)
+        {
+            var movie = await _context.Movies.Include(m => m.Comments).FirstOrDefaultAsync(m => m.Id == id);
+            if (movie == null)
+                return NotFound();
+
+            if (!string.IsNullOrEmpty(newComment))
+            {
+                var comment = new Comment { Content = newComment };
+                movie.Comments.Add(comment);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Detail", "Movie", new { id });
         }
     }
 }

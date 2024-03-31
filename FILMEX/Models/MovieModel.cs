@@ -1,11 +1,16 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿using FILMEX.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FILMEX.Models.Entities
+namespace FILMEX.Models
 {
-    public abstract class Production
+    public class Movie
     {
+        public int? Length { get; set; }
+
+        [Display(Name = "Cover Image")]
+        public IFormFile CoverImage { get; set; }
+
         public int Id { get; set; }
 
         public string Title { get; set; } = default!;
@@ -19,5 +24,7 @@ namespace FILMEX.Models.Entities
         public List<Actor> Actors { get; set; } = new List<Actor>();
 
         public List<Review> Reviews { get; set; } = new List<Review>();
+
+        public List<MovieCategory> Categories { get; set; } = new List<MovieCategory>();
     }
 }
