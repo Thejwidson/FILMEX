@@ -71,7 +71,7 @@ namespace FILMEX.Controllers
 
                 if (movie.CoverImage != null)
                 {
-                    string folder = "/movies/cover";
+                    string folder = "movies/cover";
                     folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName;
                     string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder);
 
