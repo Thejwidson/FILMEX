@@ -71,7 +71,7 @@ namespace FILMEX.Controllers
 
                 if (movie.CoverImage != null)
                 {
-                    string folder = "movies/cover";
+                    string folder = "movies/cover/";
                     folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName;
                     string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder);
 
@@ -96,20 +96,31 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
+            var movieEntity = await _context.Movies.FindAsync(id);
+            if (movieEntity == null)
             {
                 return NotFound();
             }
-            return View(movie);
+
+            var movieModel = new Models.Movie
+            {
+                Id = movieEntity.Id,
+                Title = movieEntity.Title,
+                Description = movieEntity.Description,
+                PublishDate = movieEntity.PublishDate,
+                Rating = movieEntity.Rating
+            };
+
+            return View(movieModel);
         }
+
 
         // POST: Movie/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Length,Id,Title,Description,PublishDate,Rating,AttachmentSource")] Models.Entities.Movie movie)
+        public async Task<IActionResult> Edit(int id, Models.Movie movie)
         {
             if (id != movie.Id)
             {
@@ -120,11 +131,35 @@ namespace FILMEX.Controllers
             {
                 try
                 {
-                    _context.Update(movie); // Update the movie entity
-                    await _context.SaveChangesAsync(); // Save changes to the database
-                    return RedirectToAction(nameof(Index)); // Redirect to index page after successful update
+                    // znajdz film o danym ID
+                    var movieEntity = await _context.Movies.FindAsync(id);
+                    if (movieEntity == null)
+                    {
+                        return NotFound();
+                    }
+                    // update danych istniejacego juz filmu
+                    movieEntity.Title = movie.Title;
+                    movieEntity.Description = movie.Description;
+                    movieEntity.PublishDate = movie.PublishDate;
+                    movieEntity.Rating = movie.Rating;
+
+                    // dodanie obrazu i zapisanie AttachmentSource
+                    if (movie.CoverImage != null)
+                    {
+                        string folder = "movies/cover/";
+                        folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName; // nazwa pliku
+                        string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder); // sciezka do pliku
+
+                        await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create)); // upload zdjecia
+
+                        movieEntity.AttachmentSource = folder; // przypisanie sciezki do filmu w bazie danych
+                    }
+
+                    // update w baziedanych
+                    _context.Update(movieEntity);
+                    await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException) // error catch
                 {
                     if (!MovieExists(movie.Id))
                     {
@@ -135,13 +170,12 @@ namespace FILMEX.Controllers
                         throw;
                     }
                 }
+                return RedirectToAction(nameof(Index)); // wroc do listy filmow
             }
-            else
-            {
-                // do something
-            }
-            return View(movie);
+            return View(movie); // zostan na stronie edycji
         }
+
+
 
 
         // GET: Movie/Delete/5
