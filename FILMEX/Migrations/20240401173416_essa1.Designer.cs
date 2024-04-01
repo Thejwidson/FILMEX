@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FILMEX.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240313131810_Init3")]
-    partial class Init3
+    [Migration("20240401173416_essa1")]
+    partial class essa1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("MoviesId");
 
-                    b.ToTable("ActorMovie");
+                    b.ToTable("ActorMovie (Dictionary<string, object>)");
                 });
 
             modelBuilder.Entity("ActorSeries", b =>
@@ -52,7 +52,7 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("ActorSeries");
+                    b.ToTable("ActorSeries (Dictionary<string, object>)");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Actor", b =>
@@ -82,7 +82,29 @@ namespace FILMEX.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Actors");
+                    b.ToTable("Actor");
+                });
+
+            modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MovieId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Movie", b =>
@@ -92,6 +114,10 @@ namespace FILMEX.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AttachmentSource")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -112,7 +138,7 @@ namespace FILMEX.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movie");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.MovieCategory", b =>
@@ -129,7 +155,7 @@ namespace FILMEX.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MoviesCategories");
+                    b.ToTable("MovieCategory");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Review", b =>
@@ -161,7 +187,7 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Series", b =>
@@ -312,6 +338,8 @@ namespace FILMEX.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -342,12 +370,10 @@ namespace FILMEX.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -384,12 +410,10 @@ namespace FILMEX.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -411,7 +435,22 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("MoviesId");
 
-                    b.ToTable("MovieMovieCategory");
+                    b.ToTable("MovieMovieCategory (Dictionary<string, object>)");
+                });
+
+            modelBuilder.Entity("FILMEX.Models.Entities.User", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("ActorMovie", b =>
@@ -442,6 +481,13 @@ namespace FILMEX.Migrations
                         .HasForeignKey("SeriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
+                {
+                    b.HasOne("FILMEX.Models.Entities.Movie", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("MovieId");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Review", b =>
@@ -521,8 +567,19 @@ namespace FILMEX.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FILMEX.Models.Entities.User", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithOne()
+                        .HasForeignKey("FILMEX.Models.Entities.User", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FILMEX.Models.Entities.Movie", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Reviews");
                 });
 

@@ -41,7 +41,7 @@ app.MapControllerRoute(
 
 //ogarnac czemu nie dziala seedowanie
 
-using(var scope = app.Services.CreateScope())
+/*using(var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
@@ -64,7 +64,7 @@ using(var scope = app.Services.CreateScope())
         await userManager.AddToRoleAsync(adminUser, "Admin");
     }
 
-}
+}*/
 
 
 app.Run();

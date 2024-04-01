@@ -17,6 +17,27 @@ namespace FILMEX.Data
         public DbSet<MovieCategory> MoviesCategories { get; set; }
         public DbSet<User> Users {  get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            if (modelBuilder == null)
+                throw new ArgumentNullException("modelBuilder");
+
+            // for the other conventions, we do a metadata model loop
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                // equivalent of modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+                entityType.SetTableName(entityType.DisplayName());
+
+                // equivalent of modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+                entityType.GetForeignKeys()
+                    .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade)
+                    .ToList()
+                    .ForEach(fk => fk.DeleteBehavior = DeleteBehavior.Cascade);
+            }
+
+            base.OnModelCreating(modelBuilder);
+        }
+
         /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=FILMEX;Trusted_Connection=True");

@@ -34,7 +34,7 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("MoviesId");
 
-                    b.ToTable("ActorMovie");
+                    b.ToTable("ActorMovie (Dictionary<string, object>)");
                 });
 
             modelBuilder.Entity("ActorSeries", b =>
@@ -49,7 +49,7 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("ActorSeries");
+                    b.ToTable("ActorSeries (Dictionary<string, object>)");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Actor", b =>
@@ -79,7 +79,7 @@ namespace FILMEX.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Actors");
+                    b.ToTable("Actor");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
@@ -101,7 +101,7 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Movie", b =>
@@ -135,7 +135,7 @@ namespace FILMEX.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movie");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.MovieCategory", b =>
@@ -152,7 +152,7 @@ namespace FILMEX.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MoviesCategories");
+                    b.ToTable("MovieCategory");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Review", b =>
@@ -184,7 +184,7 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Series", b =>
@@ -284,11 +284,6 @@ namespace FILMEX.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -341,9 +336,7 @@ namespace FILMEX.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -439,7 +432,7 @@ namespace FILMEX.Migrations
 
                     b.HasIndex("MoviesId");
 
-                    b.ToTable("MovieMovieCategory");
+                    b.ToTable("MovieMovieCategory (Dictionary<string, object>)");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.User", b =>
@@ -454,7 +447,7 @@ namespace FILMEX.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasDiscriminator().HasValue("User");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("ActorMovie", b =>
@@ -567,6 +560,15 @@ namespace FILMEX.Migrations
                     b.HasOne("FILMEX.Models.Entities.Movie", null)
                         .WithMany()
                         .HasForeignKey("MoviesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FILMEX.Models.Entities.User", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithOne()
+                        .HasForeignKey("FILMEX.Models.Entities.User", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
