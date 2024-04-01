@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FILMEX.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240401173416_essa1")]
-    partial class essa1
+    [Migration("20240401180134_dziala1")]
+    partial class dziala1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,7 +123,7 @@ namespace FILMEX.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Length")
+                    b.Property<int>("Length")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("PublishDate")

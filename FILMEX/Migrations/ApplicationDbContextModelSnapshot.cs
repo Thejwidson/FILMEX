@@ -120,7 +120,7 @@ namespace FILMEX.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Length")
+                    b.Property<int>("Length")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("PublishDate")

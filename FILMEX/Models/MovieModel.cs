@@ -6,7 +6,7 @@ namespace FILMEX.Models
 {
     public class Movie
     {
-        public int? Length { get; set; }
+        public int Length { get; set; }
 
         [Display(Name = "Cover Image")]
         public IFormFile CoverImage { get; set; }

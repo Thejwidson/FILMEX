@@ -68,6 +68,7 @@ namespace FILMEX.Controllers
                 movieEntity.Description = movie.Description;
                 movieEntity.PublishDate = movie.PublishDate;
                 movieEntity.Rating = movie.Rating;
+                movieEntity.Length = movie.Length;
 
                 if (movie.CoverImage != null)
                 {
