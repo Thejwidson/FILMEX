@@ -10,6 +10,7 @@ using FILMEX.Models.Entities;
 using Microsoft.AspNetCore.Hosting;
 using FILMEX.Models;
 using static NuGet.Packaging.PackagingConstants;
+using System.Security.Claims;
 
 namespace FILMEX.Controllers
 {
@@ -39,6 +40,8 @@ namespace FILMEX.Controllers
             }
 
             var movie = await _context.Movies
+                .Include(m => m.Comments)
+                    .ThenInclude(c => c.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {

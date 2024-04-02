@@ -1,4 +1,8 @@
 ﻿@model FILMEX.Models.Entities.Movie
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -20,7 +24,7 @@
         @foreach (var comment in Model.Comments)
         {
                 <li>@comment.Content</li>
-                <li>@comment.Author</li>
+                <li>@comment.Author.Email</li>
                 
         }
         </ul>
