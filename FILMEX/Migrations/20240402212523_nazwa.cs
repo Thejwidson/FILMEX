@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FILMEX.Migrations
 {
     /// <inheritdoc />
-    public partial class fixwoho2 : Migration
+    public partial class nazwa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -272,17 +272,33 @@ namespace FILMEX.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ParentId = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MovieId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comment", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Comment_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comment_Comment_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Comment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Comment_Movie_MovieId",
                         column: x => x.MovieId,
                         principalTable: "Movie",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+        });
 
             migrationBuilder.CreateTable(
                 name: "MovieMovieCategory (Dictionary<string, object>)",
@@ -409,9 +425,19 @@ namespace FILMEX.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comment_AuthorId",
+                table: "Comment",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comment_MovieId",
                 table: "Comment",
                 column: "MovieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comment_ParentId",
+                table: "Comment",
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieMovieCategory (Dictionary<string, object>)_MoviesId",

@@ -4,6 +4,7 @@ using FILMEX.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FILMEX.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402212523_nazwa")]
+    partial class nazwa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,7 +103,10 @@ namespace FILMEX.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MovieId")
+                    b.Property<int?>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParentId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -108,6 +114,8 @@ namespace FILMEX.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("MovieId");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Comment");
                 });
@@ -490,19 +498,23 @@ namespace FILMEX.Migrations
 
             modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
                 {
-                    b.HasOne("FILMEX.Models.Entities.User", "Author")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId");
 
-                    b.HasOne("FILMEX.Models.Entities.Movie", "Movie")
+                    b.HasOne("FILMEX.Models.Entities.Movie", null)
                         .WithMany("Comments")
-                        .HasForeignKey("MovieId")
+                        .HasForeignKey("MovieId");
+
+                    b.HasOne("FILMEX.Models.Entities.Comment", "Parent")
+                        .WithMany("Comments")
+                        .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
 
-                    b.Navigation("Movie");
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Review", b =>
@@ -589,6 +601,11 @@ namespace FILMEX.Migrations
                         .HasForeignKey("FILMEX.Models.Entities.User", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Movie", b =>

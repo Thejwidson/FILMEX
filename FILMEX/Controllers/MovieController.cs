@@ -10,6 +10,7 @@ using FILMEX.Models.Entities;
 using Microsoft.AspNetCore.Hosting;
 using FILMEX.Models;
 using static NuGet.Packaging.PackagingConstants;
+using System.Security.Claims;
 
 namespace FILMEX.Controllers
 {
@@ -39,6 +40,8 @@ namespace FILMEX.Controllers
             }
 
             var movie = await _context.Movies
+                .Include(m => m.Comments)
+                    .ThenInclude(c => c.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
@@ -236,7 +239,20 @@ namespace FILMEX.Controllers
 
             if (!string.IsNullOrEmpty(newComment))
             {
-                var comment = new Comment { Content = newComment };
+                // Get the current user's ID
+                string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                // Retrieve the user object from the database based on the user ID
+                var user = await _context.Users.FindAsync(userId);
+
+                var comment = new Comment
+                {
+                    Content = newComment,
+                    Movie = movie, // Assign the movie object to the comment
+                    CreatedOn = DateTime.Now,
+                    Author = user // Assign the user object to the comment
+                };
+
                 movie.Comments.Add(comment);
                 await _context.SaveChangesAsync();
             }

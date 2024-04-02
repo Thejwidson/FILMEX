@@ -4,6 +4,7 @@ using FILMEX.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FILMEX.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402213301_nazwa1")]
+    partial class nazwa1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,11 +106,16 @@ namespace FILMEX.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("MovieId");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Comment");
                 });
@@ -490,7 +498,7 @@ namespace FILMEX.Migrations
 
             modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
                 {
-                    b.HasOne("FILMEX.Models.Entities.User", "Author")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId");
 
@@ -500,9 +508,17 @@ namespace FILMEX.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FILMEX.Models.Entities.Comment", "Parent")
+                        .WithMany("Comments")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Author");
 
                     b.Navigation("Movie");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Review", b =>
@@ -589,6 +605,11 @@ namespace FILMEX.Migrations
                         .HasForeignKey("FILMEX.Models.Entities.User", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Movie", b =>
