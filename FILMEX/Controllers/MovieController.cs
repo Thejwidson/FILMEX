@@ -224,6 +224,12 @@ namespace FILMEX.Controllers
             {
                 return NotFound();
             }
+
+            foreach (var comment in movie.Comments)
+            {
+                _context.Entry(comment).Reference(c => c.Author).Load();
+            }
+
             return View(movie);
         }
 
@@ -236,7 +242,23 @@ namespace FILMEX.Controllers
 
             if (!string.IsNullOrEmpty(newComment))
             {
-                var comment = new Comment { Content = newComment };
+                 // Get the current user
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                       return NotFound();
+                }
+
+                var comment = new Comment
+                {
+                    Content = newComment,
+                    Movie = movie,
+                    CreatedOn = DateTime.Now,
+                    Author = user
+                };
+
                 movie.Comments.Add(comment);
                 await _context.SaveChangesAsync();
             }
