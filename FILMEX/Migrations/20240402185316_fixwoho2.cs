@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FILMEX.Migrations
 {
     /// <inheritdoc />
-    public partial class dziala1 : Migration
+    public partial class fixwoho2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

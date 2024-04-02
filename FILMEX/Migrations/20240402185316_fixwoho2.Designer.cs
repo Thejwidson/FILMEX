@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FILMEX.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240401180134_dziala1")]
-    partial class dziala1
+    [Migration("20240402185316_fixwoho2")]
+    partial class fixwoho2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
