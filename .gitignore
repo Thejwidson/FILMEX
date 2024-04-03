@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /FILMEX/Migrations/20240313210634_nazwa.cs
 /FILMEX/Migrations/20240313210634_nazwa.Designer.cs
 /FILMEX/Migrations/
+/FILMEX/Migrations/ApplicationDbContextModelSnapshot.cs
