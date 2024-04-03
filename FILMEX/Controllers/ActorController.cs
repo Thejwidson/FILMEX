@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FILMEX.Data;
 using FILMEX.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FILMEX.Controllers
 {
@@ -20,12 +21,14 @@ namespace FILMEX.Controllers
         }
 
         // GET: Actor
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Actors.ToListAsync());
         }
 
         // GET: Actor/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +47,7 @@ namespace FILMEX.Controllers
         }
 
         // GET: Actor/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +58,7 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,LastName,Age,DateOfBirth,DateOfDeath")] Actor actor)
         {
             if (ModelState.IsValid)
@@ -66,6 +71,7 @@ namespace FILMEX.Controllers
         }
 
         // GET: Actor/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +92,7 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,LastName,Age,DateOfBirth,DateOfDeath")] Actor actor)
         {
             if (id != actor.Id)
@@ -117,6 +124,7 @@ namespace FILMEX.Controllers
         }
 
         // GET: Actor/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +145,7 @@ namespace FILMEX.Controllers
         // POST: Actor/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var actor = await _context.Actors.FindAsync(id);

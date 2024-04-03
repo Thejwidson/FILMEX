@@ -29,12 +29,14 @@ namespace FILMEX.Controllers
         }
 
         // GET: Movie
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Movies.ToListAsync());
         }
 
         // GET: Movie/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,6 +57,7 @@ namespace FILMEX.Controllers
         }
 
         // GET: Movie/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -65,6 +68,7 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(Models.Movie movie)
         {
             if (ModelState.IsValid)
@@ -96,6 +100,7 @@ namespace FILMEX.Controllers
 
 
         // GET: Movie/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -127,6 +132,7 @@ namespace FILMEX.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, Models.Movie movie)
         {
             if (id != movie.Id)
@@ -186,6 +192,7 @@ namespace FILMEX.Controllers
 
 
         // GET: Movie/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -296,6 +303,7 @@ namespace FILMEX.Controllers
         // POST: Movie/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var movie = await _context.Movies.FindAsync(id);
