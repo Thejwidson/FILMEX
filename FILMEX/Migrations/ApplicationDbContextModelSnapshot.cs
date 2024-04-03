@@ -90,14 +90,22 @@ namespace FILMEX.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MovieId")
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MovieId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("MovieId");
 
@@ -482,9 +490,19 @@ namespace FILMEX.Migrations
 
             modelBuilder.Entity("FILMEX.Models.Entities.Comment", b =>
                 {
-                    b.HasOne("FILMEX.Models.Entities.Movie", null)
+                    b.HasOne("FILMEX.Models.Entities.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
+                    b.HasOne("FILMEX.Models.Entities.Movie", "Movie")
                         .WithMany("Comments")
-                        .HasForeignKey("MovieId");
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("FILMEX.Models.Entities.Review", b =>
