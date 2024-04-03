@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using FILMEX.Models;
 using static NuGet.Packaging.PackagingConstants;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FILMEX.Controllers
 {
@@ -200,6 +201,36 @@ namespace FILMEX.Controllers
             return View(movie);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteComment(int commentId)
+        {
+            var movie = _context.Movies.Include(m => m.Comments).FirstOrDefault(m => m.Comments.Any(c => c.Id == commentId));
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var comment1 in movie.Comments)
+            {
+                _context.Entry(comment1).Reference(c => c.Author).Load();
+                _context.Entry(comment1).Reference(c => c.Movie).Load();
+            }
+
+            var comment = _context.Comments.FirstOrDefault(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            _context.Comments.Remove(comment);
+            _context.SaveChanges();
+
+            return View("Detail", movie);
+        }
+
         // POST: Movie/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -231,6 +262,7 @@ namespace FILMEX.Controllers
             foreach (var comment in movie.Comments)
             {
                 _context.Entry(comment).Reference(c => c.Author).Load();
+                _context.Entry(comment).Reference(c => c.Movie).Load();
             }
 
             return View(movie);
