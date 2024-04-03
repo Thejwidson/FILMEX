@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Hosting;
 using FILMEX.Models;
 using static NuGet.Packaging.PackagingConstants;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Primitives;
+using System.Globalization;
 
 namespace FILMEX.Controllers
 {
@@ -200,6 +203,96 @@ namespace FILMEX.Controllers
             return View(movie);
         }
 
+        [HttpPost]
+        public ActionResult UpdateRating(int MovieId, string Rating)
+        {
+            float rating = float.Parse(Rating, CultureInfo.InvariantCulture);
+            var movie = _context.Movies.FirstOrDefault(m => m.Id == MovieId);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            // Get the current user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the user has already rated the movie
+            var review = _context.Reviews.FirstOrDefault(r => r.Movie.Id == MovieId && r.User.Id == userId);
+            if (review == null)
+            {
+                review = new Review
+                {
+                    Rating = rating,
+                    User = user,
+                    Movie = movie
+                };
+
+                _context.Reviews.Add(review);
+            }
+            else
+            {
+                review.Rating = rating;
+                _context.Reviews.Update(review);
+            }
+
+            _context.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
+        // Get current user's review of the movie with the given ID to use in HTML code
+        [HttpGet]
+        public ActionResult GetReview(int MovieId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var review = _context.Reviews.FirstOrDefault(r => r.Movie.Id == MovieId && r.User.Id == userId);
+
+            if (review == null)
+            {
+                return Json(new { rating = 0 });
+            }
+
+            return Json(new { rating = review.Rating });
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteComment(int commentId)
+        {
+            var movie = _context.Movies.Include(m => m.Comments).FirstOrDefault(m => m.Comments.Any(c => c.Id == commentId));
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var comment1 in movie.Comments)
+            {
+                _context.Entry(comment1).Reference(c => c.Author).Load();
+                _context.Entry(comment1).Reference(c => c.Movie).Load();
+            }
+
+            var comment = _context.Comments.FirstOrDefault(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            _context.Comments.Remove(comment);
+            _context.SaveChanges();
+
+            return View("Detail", movie);
+        }
+
         // POST: Movie/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -231,6 +324,7 @@ namespace FILMEX.Controllers
             foreach (var comment in movie.Comments)
             {
                 _context.Entry(comment).Reference(c => c.Author).Load();
+                _context.Entry(comment).Reference(c => c.Movie).Load();
             }
 
             return View(movie);
@@ -245,7 +339,7 @@ namespace FILMEX.Controllers
 
             if (!string.IsNullOrEmpty(newComment))
             {
-                 // Get the current user
+                // Get the current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 

@@ -14,35 +14,83 @@
 <h2>@Model.Title</h2>
 <div style="display: flex; align-items: top;">
     <img src="/@Model.AttachmentSource" class="img-thumbnail" alt="Movie Cover" style="margin-right: 10px;">
-    <p>@Model.Description</p>
+    <div class="row">
+        <div class="col-md-6 d-flex flex-column align-items-start" style="width: 600px;">
+            <div class="mb-sm-0 mb-3" style="background-color: #f8f9fa; padding: 10px;">
+                <small class="text-muted fw-medium">Opis filmu:</small>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex flex-column align-items-start" style="width: 300px;">
+            <div class="rate-star" data-movie-id="@Model.Id">
+                <p style="margin-top: 10px;">Oceń ten film</p>
+                <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="0.5" value="0">
+            </div>
+        </div>
+    </div>
 </div>
 
-<h3>Comments</h3>
-    @if (Model.Comments.Any())
-    {
-        <ul>
-        @foreach (var comment in Model.Comments)
-        {
-                <li>@comment.Content</li>
-                <li>@comment.Author.Email</li>
-                
-        }
+<div class="row mt-5">
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="comment-list  comment-top" list="@Model.Comments" count="0">
+            <h3 class="mb-5">@Model.Comments.Count() Comments</h3>
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="comment-body">
+                    <h4 class="commenter-name">@comment.Author.FirstName @comment.Author.LastName</h4>
+                    <div class="comment-date">@comment.CreatedOn.ToString("dd.MM.yyyy")</div>
+                    <p class="comment-message">@comment.Content</p>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <form asp-controller="Movie" asp-action="DeleteComment" method="post">
+                            <input type="hidden" name="commentId" value="@comment.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    }
+                </div>
+                <hr />
+            }
         </ul>
-    }
-    else
-    {
-        <p>No comments available.</p>
-    }
 
-<!-- Form for adding comments -->
-<h3>Add a Comment</h3>
-<form asp-controller="Movie" asp-action="NewComment" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <div class="form-group">
-        <label for="newComment">Comment:</label>
-        <textarea id="newComment" name="newComment" class="form-control"></textarea>
+        <!-- Form for adding comments -->
+        @if (User.Identity.IsAuthenticated)
+        {
+            <h3>Add a Comment</h3>
+            <form asp-controller="Movie" asp-action="NewComment" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="form-group">
+                    <label for="newComment">Comment:</label>
+                    <textarea id="newComment" name="newComment" class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        }
+        else
+        {
+            <a class="reply-btn btn" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="~/Movie/@Model.Id">Login to Comment on this Movie</a>
+        }
     </div>
-    <button type="submit" class="btn btn-primary">Add Comment</button>
-</form>
+</div>
 
 <a asp-action="Index">Back to List</a>
+
+@{
+    <script>
+        $(document).ready(function () {
+            var movieId = $('.rate-star').data('movie-id');
+
+            $.ajax({
+                url: '/Movie/GetReview',
+                method: 'GET',
+                data: { MovieId: movieId },
+                success: function (response) {
+                    $('#input-1').rating('update', response.rating);
+                    // $('#input-1').val(response.rating);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+}
