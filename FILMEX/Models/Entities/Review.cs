@@ -7,10 +7,10 @@ namespace FILMEX.Models.Entities
         public int Id { get; set; }
 
         [Range(0,10)]
-        public int Rating { get; set; }
+        public float Rating { get; set; }
 
-        public string? Comment { get; set; }
+        public User User { get; set; }
 
-        public DateTime CreatedTime { get; set; }
+        public Movie Movie { get; set; }
     }
 }

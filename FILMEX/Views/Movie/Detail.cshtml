@@ -14,7 +14,20 @@
 <h2>@Model.Title</h2>
 <div style="display: flex; align-items: top;">
     <img src="/@Model.AttachmentSource" class="img-thumbnail" alt="Movie Cover" style="margin-right: 10px;">
-    <p>@Model.Description</p>
+    <div class="row">
+        <div class="col-md-6 d-flex flex-column align-items-start" style="width: 600px;">
+            <div class="mb-sm-0 mb-3" style="background-color: #f8f9fa; padding: 10px;">
+                <small class="text-muted fw-medium">Opis filmu:</small>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex flex-column align-items-start" style="width: 300px;">
+            <div class="rate-star" data-movie-id="@Model.Id">
+                <p style="margin-top: 10px;">Oceń ten film</p>
+                <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="0.5" value="0">
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row mt-5">
@@ -60,3 +73,24 @@
 </div>
 
 <a asp-action="Index">Back to List</a>
+
+@{
+    <script>
+        $(document).ready(function () {
+            var movieId = $('.rate-star').data('movie-id');
+
+            $.ajax({
+                url: '/Movie/GetReview',
+                method: 'GET',
+                data: { MovieId: movieId },
+                success: function (response) {
+                    $('#input-1').rating('update', response.rating);
+                    // $('#input-1').val(response.rating);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+}
