@@ -171,26 +171,25 @@ namespace FILMEX.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("MovieId")
+                    b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<float>("Rating")
+                        .HasColumnType("real");
 
                     b.Property<int?>("SeriesId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MovieId");
 
                     b.HasIndex("SeriesId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Review");
                 });
@@ -507,13 +506,23 @@ namespace FILMEX.Migrations
 
             modelBuilder.Entity("FILMEX.Models.Entities.Review", b =>
                 {
-                    b.HasOne("FILMEX.Models.Entities.Movie", null)
+                    b.HasOne("FILMEX.Models.Entities.Movie", "Movie")
                         .WithMany("Reviews")
-                        .HasForeignKey("MovieId");
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FILMEX.Models.Entities.Series", null)
                         .WithMany("Reviews")
                         .HasForeignKey("SeriesId");
+
+                    b.HasOne("FILMEX.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
