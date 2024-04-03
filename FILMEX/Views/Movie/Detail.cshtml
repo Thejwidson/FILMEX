@@ -27,6 +27,13 @@
                     <h4 class="commenter-name">@comment.Author.FirstName @comment.Author.LastName</h4>
                     <div class="comment-date">@comment.CreatedOn.ToString("dd.MM.yyyy")</div>
                     <p class="comment-message">@comment.Content</p>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <form asp-controller="Movie" asp-action="DeleteComment" method="post">
+                            <input type="hidden" name="commentId" value="@comment.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    }
                 </div>
                 <hr />
             }
