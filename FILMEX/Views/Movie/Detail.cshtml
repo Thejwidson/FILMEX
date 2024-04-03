@@ -32,25 +32,48 @@
 
 <div class="row mt-5">
     <div class="col-lg-8 col-md-10 mx-auto">
-        <ul class="comment-list  comment-top" list="@Model.Comments" count="0">
-            <h3 class="mb-5">@Model.Comments.Count() Comments</h3>
-            @foreach (var comment in Model.Comments)
-            {
-                <div class="comment-body">
-                    <h4 class="commenter-name">@comment.Author.FirstName @comment.Author.LastName</h4>
-                    <div class="comment-date">@comment.CreatedOn.ToString("dd.MM.yyyy")</div>
-                    <p class="comment-message">@comment.Content</p>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <form asp-controller="Movie" asp-action="DeleteComment" method="post">
-                            <input type="hidden" name="commentId" value="@comment.Id" />
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    }
+        <!-- Komentarze -->
+        <section style="background-color: #f7f6f6;">
+            <div class="container my-5 py-5 text-dark">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-12 col-lg-10 col-xl-8">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="text-dark mb-0">Comments (@Model.Comments.Count())</h4>
+                        </div>
+                        @foreach (var comment in Model.Comments)
+                        {
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex flex-start">
+                                        <img class="rounded-circle shadow-1-strong me-3" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(26).webp" alt="avatar" width="40" height="40" />
+                                        <div class="w-100">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h6 class="text-primary fw-bold mb-0">
+                                                    @comment.Author.FirstName @comment.Author.LastName
+                                                </h6>
+                                                <p class="mb-0">@comment.CreatedOn.ToString("dd.MM.yyyy")</p>
+                                            </div>
+                                            <div class="d-flex flex-column align-items-left">
+                                                <p class="text-dark">@comment.Content</p>
+                                                <p class="small mb-0" style="color: #aaa;">
+                                                    @if (User.IsInRole("Admin"))
+                                                    {
+                                                        <form asp-controller="Movie" asp-action="DeleteComment" method="post">
+                                                            <input type="hidden" name="commentId" value="@comment.Id" />
+                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                        </form>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
-                <hr />
-            }
-        </ul>
+            </div>
+        </section>
 
         <!-- Form for adding comments -->
         @if (User.Identity.IsAuthenticated)
