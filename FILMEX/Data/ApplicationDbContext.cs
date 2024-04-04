@@ -1,4 +1,5 @@
-﻿using FILMEX.Models.Entities;
+﻿using FILMEX.Models;
+using FILMEX.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

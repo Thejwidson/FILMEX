@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace FILMEX.Models.Entities
+namespace FILMEX.Models
 {
-    public class User : IdentityUser
+    public class UserModel : IdentityUser
     {
         [Required]
         public string FirstName { get; set; }
@@ -11,6 +11,6 @@ namespace FILMEX.Models.Entities
         [Required]
         public string LastName { get; set; }
 
-        public string AttachmentSource { get; set; }
+        public IFormFile ProfileImage { get; set; }
     }
 }
