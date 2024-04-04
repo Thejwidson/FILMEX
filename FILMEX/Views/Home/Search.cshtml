@@ -5,44 +5,66 @@
 }
 
 
-<h2>Aktorzy:</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Movies</h2>
+            <div class="row">
+                @if (Model.Movies.Any())
+                {
+                    @foreach (var movie in Model.Movies)
+                    {
+                        <div class="col-md-2">
+                            <div class="card">
+                                <img src="/@movie.AttachmentSource" class="card-img-top movie-image" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">@movie.Title</h5>
+                                    <a href="@Url.Action("Detail", "Movie", new { id = movie.Id })" class="btn btn-primary">See details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No Search Results Found</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .movie-image {
+        object-fit: cover; /* Maintain aspect ratio and cover entire area */
+    }
+</style>
+
+<h2>Actors:</h2>
 @if (Model.Actors.Any())
 {
-<ul>
-    @foreach (var actor in Model.Actors)
-    {
-        
-        <li>@actor.Name</li>
-    }
-    </ul>
-}
-else
-{
-   <p>No Search Results Found</p>
-}
+    <ul>
+        @foreach (var actor in Model.Actors)
+        {
 
-<h2>Filmy:</h2>
-@if(Model.Movies.Any()){
-<ul>
-    @foreach (var movie in Model.Movies)
-    {
-        <li>@movie.Title</li>
-    }
-    </ul> 
-        
+            <li>@actor.Name</li>
+        }
+    </ul>
 }
 else
 {
     <p>No Search Results Found</p>
 }
 
-<h2>Serie:</h2>
-@if(Model.Series.Any()){
-<ul>
-    @foreach (var serie in Model.Series)
-    {
-        <li>@serie.Title</li>
-    }
+
+<h2>Series:</h2>
+@if (Model.Series.Any())
+{
+    <ul>
+        @foreach (var serie in Model.Series)
+        {
+            <li>@serie.Title</li>
+        }
     </ul>
 }
 else
