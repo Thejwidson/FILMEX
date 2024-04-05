@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using FILMEX.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,8 +20,7 @@ namespace FILMEX.Areas.Identity.Pages.Account.Manage
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
-        {
+            SignInManager<IdentityUser> signInManager){
             _userManager = userManager;
             _signInManager = signInManager;
         }
