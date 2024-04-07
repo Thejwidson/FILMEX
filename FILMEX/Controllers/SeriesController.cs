@@ -219,32 +219,24 @@ namespace FILMEX.Controllers
 
         // GET: Episode/Create
         [Authorize(Roles = "Admin")]
-        public IActionResult AddEpisode(int seriesId)
+        public IActionResult AddEpisode(int seriesId, int seasonId)
         {
-            // Retrieve the selected series from the database using the provided seriesId
-            var series = _context.Series.FirstOrDefault(s => s.Id == seriesId);
+            var series = _context.Series.Include(s => s.Seasons).FirstOrDefault(s => s.Id == seriesId);
 
-            // If the series is not found, handle the situation accordingly
             if (series == null)
             {
-                // Handle the case where the series is not found, maybe redirect to Index or show an error message
                 return RedirectToAction(nameof(Index));
             }
 
-            // Populate ViewBag.Series with the selected series only
-            ViewBag.Series = new List<SelectListItem>
+            var seasons = new List<SelectListItem>();
+            foreach (Season season in series.Seasons)
             {
-                new SelectListItem { Value = series.Id.ToString(), Text = series.Title, Selected = true }
-            };
+                seasons.Add(new SelectListItem { Value = season.Id.ToString(), Text = season.Title, Selected = (season.Id == seasonId) });
+            }
 
-            // Initialize a list of SelectListItem with a default option for Season 1
-            var seasons = new List<SelectListItem>
-            {
-                
-            };
             ViewBag.Seasons = seasons;
 
-            var episode = new FILMEX.Models.Entities.Episode();
+            var episode = new Episode { SeasonId = seasonId };
 
             return View(episode);
         }
@@ -253,26 +245,31 @@ namespace FILMEX.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddEpisode(Episode episode)
+        public async Task<IActionResult> AddEpisode(int seasonId, Episode episode)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                episode.SeasonId = seasonId;
+                _context.Add(episode);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            return View(episode);
         }
+
 
         // GET: Series/AddSeason
         [Authorize(Roles = "Admin")]
         public IActionResult AddSeason(int seriesId)
         {
-            var series = _context.Series
-                .Include(s => s.Seasons)
-                .FirstOrDefault(s => s.Id == seriesId);
+            var series = _context.Series.Include(s => s.Seasons).FirstOrDefault(s => s.Id == seriesId);
 
             if (series == null)
             {
                 return NotFound();
             }
-
-            // Create a new Season object to pass to the view
-            var season = new Season { seriesId = seriesId }; // Assuming Season has SeriesId property
+            var season = new Season { seriesId = seriesId };
 
             return View(season);
         }
@@ -286,12 +283,6 @@ namespace FILMEX.Controllers
         {
             if (ModelState.IsValid)
             {
-                var series = await _context.Series.FindAsync(seriesId);
-                if (series == null)
-                {
-                    return NotFound();
-                }
-
                 season.seriesId = seriesId;
                 _context.Add(season);
                 await _context.SaveChangesAsync();

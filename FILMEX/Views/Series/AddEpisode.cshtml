@@ -11,16 +11,6 @@
         <form asp-action="AddEpisode" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label for="seriesId">Select Series:</label>
-                <select class="form-control" id="seriesId" name="seriesId">
-                    <option value="0">-- Select Series --</option>
-                    @foreach (var series in ViewBag.Series)
-                    {
-                        <option value="@series.Value">@series.Text</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
                 <label for="seasonId">Select Season:</label>
                 <select class="form-control" id="seasonId" name="seasonId">
                     <option value="0">-- Select Season --</option>
