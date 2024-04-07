@@ -32,26 +32,28 @@
     </div>
 </div>
 
-<!-- Form for adding comments -->
-@if (User.Identity.IsAuthenticated)
-{
-    <h3>Add a Comment</h3>
-    <form asp-controller="Movie" asp-action="NewComment" method="post">
-        <input type="hidden" name="id" value="@Model.Id" />
-        <div class="form-group">
-            <label for="newComment">Comment:</label>
-            <textarea id="newComment" name="newComment" class="form-control"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Add Comment</button>
-    </form>
-}
-else
-{
-    <a class="reply-btn btn" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="~/Movie/@Model.Id">Login to Comment on this Movie</a>
-}
+<div style="margin-top: 50px;">
+    <!-- Form for adding comments -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h3>Add a Comment</h3>
+        <form asp-controller="Movie" asp-action="NewComment" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="form-group">
+                <label for="newComment">Comment:</label>
+                <textarea id="newComment" name="newComment" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+    }
+    else
+    {
+        <a class="reply-btn btn" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="~/Movie/@Model.Id">Login to Comment on this Movie</a>
+    }
+</div>
 
-<div class="row mt-5">
-    <div class="col-lg-8 col-md-10 mx-auto">
+<div>
+    <div class="">
         <!-- Komentarze -->
         <section style="background-color: #f7f6f6;">
             <div class="container my-5 py-5 text-dark">
@@ -65,7 +67,7 @@ else
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <div class="d-flex flex-start">
-                                        <img class="rounded-circle shadow-1-strong me-3" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(26).webp" alt="avatar" width="40" height="40" />
+                                        <img class="rounded-circle shadow-1-strong me-3" src="@comment.Author.AttachmentSource" alt="avatar" width="40" height="40" />
                                         <div class="w-100">
                                             <div class="d-flex justify-content-between align-items-center mb-3">
                                                 <h6 class="text-primary fw-bold mb-0">

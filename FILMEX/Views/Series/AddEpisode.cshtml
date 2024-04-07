@@ -1,28 +1,25 @@
-﻿@model FILMEX.Models.SeriesModel
+﻿@model FILMEX.Models.Entities.Episode
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create Season";
 }
 
-<h1>Edit</h1>
+<h1>Create Episode</h1>
 
-<h4>Series</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
+        <form asp-action="AddEpisode" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="NumberOfEpisodes" class="control-label"></label>
-                <input asp-for="NumberOfEpisodes" class="form-control" />
-                <span asp-validation-for="NumberOfEpisodes" class="text-danger"></span>
+                <label for="seasonId">Select Season:</label>
+                <select class="form-control" id="seasonId" name="seasonId">
+                    <option value="0">-- Select Season --</option>
+                    @foreach (var season in ViewBag.Seasons)
+                    {
+                        <option value="@season.Value">@season.Text</option>
+                    }
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="NumberOfSeasons" class="control-label"></label>
-                <input asp-for="NumberOfSeasons" class="form-control" />
-                <span asp-validation-for="NumberOfSeasons" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -32,6 +29,11 @@
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Length" class="control-label"></label>
+                <input asp-for="Length" class="form-control" />
+                <span asp-validation-for="Length" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PublishDate" class="control-label"></label>
@@ -44,16 +46,7 @@
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CoverImage" class="control-label"></label>
-                <div class="custom-file">
-                    <input asp-for="CoverImage" class="custom-file-input" id="customFile">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
-                </div>
-                <span asp-validation-for="CoverImage" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -64,5 +57,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
