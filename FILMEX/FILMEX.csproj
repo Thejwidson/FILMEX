@@ -21,6 +21,8 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\movies\cover\" />
+    <Folder Include="wwwroot\series\cover\" />
+    <Folder Include="wwwroot\series\episode\cover\" />
   </ItemGroup>
 
 </Project>
