@@ -28,6 +28,14 @@
                 <p style="margin-top: 10px;">Oceń ten film</p>
                 <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="0.5" value="0">
             </div>
+
+            <div id="average-rating" data-movie-id="@Model.Id" style="margin-top: 10px;"></div>
+
+            <div id="average-rating" data-movie-id="@Model.Id" style="margin-top: 10px;">
+                <img src="/util/icons8-star-48.png" alt="Star Icon" style="height: 48px; width: 48px; vertical-align: middle;">
+                <span id="rating-value" style="font-size: 48px; vertical-align: middle;"></span>
+                @* <span style="color: #6c757d; font-size: 16px; vertical-align: middle"></span> *@
+            </div>
         </div>
     </div>
 </div>
@@ -104,22 +112,23 @@
 <a asp-action="Index">Back to List</a>
 
 @{
-    <script>
-        $(document).ready(function () {
-            var movieId = $('.rate-star').data('movie-id');
+    // <script>
+    //     $(document).ready(function () {
+    //         var movieId = $('.rate-star').data('movie-id');
 
-            $.ajax({
-                url: '/Movie/GetReview',
-                method: 'GET',
-                data: { MovieId: movieId },
-                success: function (response) {
-                    $('#input-1').rating('update', response.rating);
-                    // $('#input-1').val(response.rating);
-                },
-                error: function (xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        });
-    </script>
+    //         $.ajax({
+    //             url: '/Movie/GetReview',
+    //             method: 'GET',
+    //             data: { MovieId: movieId },
+    //             success: function (response) {
+    //                 $('#input-1').rating('update', response.rating);
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 console.log(error);
+    //             }
+    //         });
+    //     });
+
+        
+    // </script>
 }
