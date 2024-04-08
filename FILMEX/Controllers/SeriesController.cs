@@ -9,6 +9,7 @@ using FILMEX.Data;
 using FILMEX.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using FILMEX.Models;
+using System.Security.Claims;
 
 namespace FILMEX.Controllers
 {
@@ -296,6 +297,55 @@ namespace FILMEX.Controllers
         private bool SeriesExists(int id)
         {
             return _context.Series.Any(e => e.Id == id);
+        }
+
+        public IActionResult Detail(int id)
+        {
+            var serie = _context.Series.Include(m => m.Comments).FirstOrDefault(m => m.Id == id);
+            if (serie == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var comment in serie.Comments)
+            {
+                _context.Entry(comment).Reference(c => c.Author).Load();
+                //_context.Entry(comment).Reference(c => c.Series).Load();
+            }
+
+            return View(serie);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewComment(int id, string newComment)
+        {
+            var serie = await _context.Series.Include(m => m.Comments).FirstOrDefaultAsync(m => m.Id == id);
+            if (serie == null)
+                return NotFound();
+
+            if (!string.IsNullOrEmpty(newComment))
+            {
+                // Get the current user
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                var comment = new Comment
+                {
+                    Content = newComment,
+                    CreatedOn = DateTime.Now,
+                    Author = user
+                };
+
+                serie.Comments.Add(comment);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Detail", "Movie", new { id });
         }
     }
 }
