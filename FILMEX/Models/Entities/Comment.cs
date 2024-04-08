@@ -9,7 +9,6 @@ namespace FILMEX.Models.Entities
     {
         public int Id { get; set; }
         public string Content { get; set; }
-
         public Movie Movie { get; set; }
         public User Author { get; set; }
         public DateTime CreatedOn { get; set; }

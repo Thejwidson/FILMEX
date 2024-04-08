@@ -1,4 +1,4 @@
-    using FILMEX.Models;
+using FILMEX.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -22,10 +22,15 @@ namespace FILMEX.Controllers
         }
 
         public IActionResult Index()
+    {
+        var viewModel = new HomeViewModel
         {
-            var movies = _context.Movies.ToList();
-            return View(movies);
-        }
+            Movies = _context.Movies.ToList(),
+            Series = _context.Series.ToList()
+        };
+
+        return View(viewModel);
+    }
 
         public IActionResult Privacy()
         {

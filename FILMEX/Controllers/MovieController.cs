@@ -269,6 +269,22 @@ namespace FILMEX.Controllers
             return Json(new { rating = review.Rating });
         }
 
+        // Get the average rating of the movie with the given ID to use in HTML code
+        [HttpGet]
+        public ActionResult GetAverageRating(int MovieId)
+        {
+            var movie = _context.Movies.Include(m => m.Reviews).FirstOrDefault(m => m.Id == MovieId);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            var averageRating = movie.Reviews.Count > 0 ? movie.Reviews.Average(r => r.Rating) : 0;
+
+            return Json(new { averageRating });
+        }
+
 
         [HttpPost]
         [Authorize(Roles = "Admin")]

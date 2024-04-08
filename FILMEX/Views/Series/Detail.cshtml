@@ -1,4 +1,4 @@
-﻿@model FILMEX.Models.Entities.Movie
+﻿@model FILMEX.Models.Entities.Series
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -14,27 +14,19 @@
 <h2>@Model.Title</h2>
 <div style="display: flex; align-items: top;">
     <div style="height:285px; width:200px;">
-    <img src="/@Model.AttachmentSource" class="img-thumbnail" alt="Movie Cover" style="margin-right: 10px;">
+    <img src="/@Model.AttachmentSource" class="img-thumbnail" alt="Series Cover" style="margin-right: 10px;">
     </div>
     <div class="row">
         <div class="col-md-6 d-flex flex-column align-items-start" style="width: 600px;">
             <div class="mb-sm-0 mb-3" style="background-color: #f8f9fa; padding: 10px;">
-                <small class="text-muted fw-medium">Opis filmu:</small>
+                <small class="text-muted fw-medium">Opis serialu:</small>
                 <p>@Model.Description</p>
             </div>
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start" style="width: 300px;">
             <div class="rate-star" data-movie-id="@Model.Id">
-                <p style="margin-top: 10px;">Oceń ten film</p>
+                <p style="margin-top: 10px;">Oceń ten serial</p>
                 <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="0.5" value="0">
-            </div>
-
-            <div id="average-rating" data-movie-id="@Model.Id" style="margin-top: 10px;"></div>
-
-            <div id="average-rating" data-movie-id="@Model.Id" style="margin-top: 10px;">
-                <img src="/util/icons8-star-48.png" alt="Star Icon" style="height: 48px; width: 48px; vertical-align: middle;">
-                <span id="rating-value" style="font-size: 48px; vertical-align: middle;"></span>
-                @* <span style="color: #6c757d; font-size: 16px; vertical-align: middle"></span> *@
             </div>
         </div>
     </div>
@@ -45,7 +37,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <h3>Add a Comment</h3>
-        <form asp-controller="Movie" asp-action="NewComment" method="post">
+        <form asp-controller="Series" asp-action="NewComment" method="post">
             <input type="hidden" name="id" value="@Model.Id" />
             <div class="form-group">
                 <label for="newComment">Comment:</label>
@@ -112,23 +104,22 @@
 <a asp-action="Index">Back to List</a>
 
 @{
-    // <script>
-    //     $(document).ready(function () {
-    //         var movieId = $('.rate-star').data('movie-id');
+    <script>
+        $(document).ready(function () {
+            var movieId = $('.rate-star').data('movie-id');
 
-    //         $.ajax({
-    //             url: '/Movie/GetReview',
-    //             method: 'GET',
-    //             data: { MovieId: movieId },
-    //             success: function (response) {
-    //                 $('#input-1').rating('update', response.rating);
-    //             },
-    //             error: function (xhr, status, error) {
-    //                 console.log(error);
-    //             }
-    //         });
-    //     });
-
-        
-    // </script>
+            $.ajax({
+                url: '/Movie/GetReview',
+                method: 'GET',
+                data: { MovieId: movieId },
+                success: function (response) {
+                    $('#input-1').rating('update', response.rating);
+                    // $('#input-1').val(response.rating);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
 }

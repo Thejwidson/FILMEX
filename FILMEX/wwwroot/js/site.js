@@ -413,4 +413,16 @@ $(document).ready(function () {
             console.log(error);
         }
     });
+
+    $.ajax({
+        url: '/Movie/GetAverageRating?MovieId=' + movieId,
+        type: 'GET',
+        success: function (data) {
+            $('#rating-value').text(data.averageRating.toFixed(1));
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+            $('#rating-value').text('?');
+        }
+    });
 });
