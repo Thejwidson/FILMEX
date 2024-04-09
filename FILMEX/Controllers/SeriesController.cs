@@ -10,6 +10,7 @@ using FILMEX.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using FILMEX.Models;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace FILMEX.Controllers
 {
@@ -237,7 +238,7 @@ namespace FILMEX.Controllers
 
             ViewBag.Seasons = seasons;
 
-            var episode = new Episode { SeasonId = seasonId };
+            var episode = new Episode { SeasonId = seasonId, SeriesId = seriesId };
 
             return View(episode);
         }
@@ -246,51 +247,47 @@ namespace FILMEX.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddEpisode(int seasonId, Episode episode)
+        public async Task<IActionResult> AddEpisode(int seasonId, int seriesId, Episode episode)
         {
             if (ModelState.IsValid)
             {
                 episode.SeasonId = seasonId;
+                episode.SeriesId = seriesId;
                 _context.Add(episode);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
-            }
+            } 
             return View(episode);
         }
 
-
-        // GET: Series/AddSeason
-        [Authorize(Roles = "Admin")]
-        public IActionResult AddSeason(int seriesId)
-        {
-            var series = _context.Series.Include(s => s.Seasons).FirstOrDefault(s => s.Id == seriesId);
-
-            if (series == null)
-            {
-                return NotFound();
-            }
-            var season = new Season { seriesId = seriesId };
-
-            return View(season);
-        }
-
-
-
+        // POST: Series/AddSeason
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddSeason(int seriesId, Season season)
         {
-            if (ModelState.IsValid)
-            {
-                season.seriesId = seriesId;
-                _context.Add(season);
-                await _context.SaveChangesAsync();
+            var series = _context.Series.Include(s => s.Seasons).FirstOrDefault(s => s.Id == seriesId);
+            string title;
 
-                return RedirectToAction(nameof(Index));
+            if (series == null || !series.Seasons.Any())
+            {
+                season.SeasonNumber = 1;
+                title = "Season 1";
             }
-            return View(season);
+            else
+            {
+                var lastSeasonNumber = series.Seasons.Max(s => s.SeasonNumber);
+                season.SeasonNumber = lastSeasonNumber + 1;
+                title = $"Season {lastSeasonNumber + 1}";
+            }
+
+            season.SeriesId = series.Id;
+            season.Title = title;
+            _context.Add(season);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
 
