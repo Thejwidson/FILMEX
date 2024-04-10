@@ -49,7 +49,70 @@ namespace FILMEX.Controllers
             return View(userRolesModel);
         }
 
-        
+        public async Task<IActionResult> ManageUsersRole(string userID)
+        {
+            var user = await _userManager.FindByIdAsync(userID);
+            if (user == null)
+            {
+                return NotFound(); 
+            }
+
+            var model = new List<UserRolesManagement>();
+            foreach (var role in _roleManager.Roles.ToList())
+            {
+                var userRolesModel = new UserRolesManagement
+                {
+                    UserID = userID,
+                    RoleID = role.Id,
+                    RoleName = role.Name
+                };
+
+
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    userRolesModel.SelectedRole = true;
+                }
+                else
+                {
+                    userRolesModel.SelectedRole = false;
+                }
+
+                model.Add(userRolesModel);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageUsersRole(List<UserRolesManagement> model, string userID)
+        {
+            var user = await _userManager.FindByIdAsync(userID);
+            if (user == null)
+            {
+                return View();
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var result = await _userManager.RemoveFromRolesAsync(user, roles);
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Cannot remove user existing roles");
+                return View(model);
+            }
+
+            result = await _userManager.AddToRolesAsync(user, model.Where(x => x.SelectedRole).Select(y => y.RoleName));
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Cannot add selected roles to user");
+                return View(model);
+            }
+
+            return RedirectToAction("UserRolesManagement");
+        }
+
+
     }
 
     
