@@ -45,8 +45,15 @@
                 <input asp-for="Rating" class="form-control" />
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
+            <input type="hidden" name="seriesId" value="@Model.SeriesId" />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+         <form asp-action="AddSeason" method="post">
+            <input type="hidden" name="seriesId" value="@Model.SeriesId" />
+            <div class="form-group">
+                <input type="submit" value="Add Season" class="btn btn-primary" />
             </div>
         </form>
     </div>
