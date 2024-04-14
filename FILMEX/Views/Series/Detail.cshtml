@@ -1,7 +1,8 @@
 ﻿@model FILMEX.Models.Entities.Series
+@using FILMEX.Models.Entities
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";

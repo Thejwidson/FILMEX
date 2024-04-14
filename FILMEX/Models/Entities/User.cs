@@ -15,7 +15,7 @@ namespace FILMEX.Models.Entities
 
         public User()
         {
-            AttachmentSource = @"\users\profileImage\defaultProfileImage.jfif";
+            AttachmentSource = @"users/profileImage/defaultProfileImage.jfif";
         }
     }
 }
