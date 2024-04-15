@@ -74,8 +74,6 @@ namespace FILMEX.Controllers
                 series.Description = seriesModel.Description;
                 series.PublishDate = seriesModel.PublishDate;
                 series.Rating = seriesModel.Rating;
-                series.NumberOfEpisodes = seriesModel.NumberOfEpisodes;
-                series.NumberOfSeasons = seriesModel.NumberOfSeasons;
 
                 if (seriesModel.CoverImage != null)
                 {
@@ -117,8 +115,6 @@ namespace FILMEX.Controllers
                 Description = series.Description,
                 PublishDate = series.PublishDate,
                 Rating = series.Rating,
-                NumberOfEpisodes = series.NumberOfEpisodes,
-                NumberOfSeasons = series.NumberOfSeasons
              };
             return View(seriesModel);
         }
@@ -150,8 +146,6 @@ namespace FILMEX.Controllers
                     seriesEntity.Description = seriesModel.Description;
                     seriesEntity.PublishDate = seriesModel.PublishDate;
                     seriesEntity.Rating = seriesModel.Rating;
-                    seriesEntity.NumberOfEpisodes = seriesModel.NumberOfEpisodes;
-                    seriesEntity.NumberOfSeasons = seriesModel.NumberOfSeasons;
 
                     if (seriesModel.CoverImage != null)
                     {

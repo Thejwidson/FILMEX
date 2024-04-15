@@ -12,16 +12,6 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="NumberOfEpisodes" class="control-label"></label>
-                <input asp-for="NumberOfEpisodes" class="form-control" />
-                <span asp-validation-for="NumberOfEpisodes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NumberOfSeasons" class="control-label"></label>
-                <input asp-for="NumberOfSeasons" class="form-control" />
-                <span asp-validation-for="NumberOfSeasons" class="text-danger"></span>
-            </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
