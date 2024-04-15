@@ -231,23 +231,26 @@ namespace FILMEX.Controllers
             }
 
             // Check if the user has already rated the movie
-            var review = _context.Reviews.FirstOrDefault(r => r.Movie.Id == MovieId && r.User.Id == userId);
+            var review = _context.ReviewsMovie.FirstOrDefault(r => r.Movie.Id == MovieId && r.User.Id == userId);
+
             if (review == null)
             {
-                review = new Review
+                review = new ReviewMovie
                 {
                     Rating = rating,
                     User = user,
                     Movie = movie
                 };
 
-                _context.Reviews.Add(review);
+                movie.Reviews.Add(review);
+                _context.ReviewsMovie.Add(review);
             }
             else
             {
                 review.Rating = rating;
-                _context.Reviews.Update(review);
+                _context.ReviewsMovie.Update(review);
             }
+
 
             _context.SaveChanges();
 
@@ -259,7 +262,7 @@ namespace FILMEX.Controllers
         public ActionResult GetReview(int MovieId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var review = _context.Reviews.FirstOrDefault(r => r.Movie.Id == MovieId && r.User.Id == userId);
+            var review = _context.ReviewsMovie.FirstOrDefault(r => r.Movie.Id == MovieId && r.User.Id == userId);
 
             if (review == null)
             {

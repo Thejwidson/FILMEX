@@ -381,48 +381,138 @@
 
 $(document).ready(function () {
     $('.rating').on('rating.change', function (event, value, caption) {
-        var movieId = $(this).closest('.rate-star').data('movie-id');
+        var $parent = $(this).closest('.rate-star');
+        var movieId = $parent.data('movie-id');
+        var seriesId = $parent.data('series-id');
 
-        $.ajax({
-            url: '/Movie/UpdateRating',
-            method: 'POST',
-            
-            data: {
-                MovieId: movieId,
-                Rating: value
-            },
-            success: function (response) {
-            },
-            error: function (xhr, status, error) {
-            }
-        });
+        if (movieId !== undefined) {
+            $.ajax({
+                url: '/Movie/UpdateRating',
+                method: 'POST',
+                data: {
+                    MovieId: movieId,
+                    Rating: value
+                },
+                success: function (response) {
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+        } else if (seriesId !== undefined) {
+            $.ajax({
+                url: '/Series/UpdateRating',
+                method: 'POST',
+                data: {
+                    SeriesId: seriesId,
+                    Rating: value
+                },
+                success: function (response) {
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+        }
     });
+
+    //$('.rating').on('rating.change', function (event, value, caption) {
+    //    var movieId = $(this).closest('.rate-star').data('movie-id');
+
+    //    $.ajax({
+    //        url: '/Movie/UpdateRating',
+    //        method: 'POST',
+
+    //        data: {
+    //            MovieId: movieId,
+    //            Rating: value
+    //        },
+    //        success: function (response) {
+    //        },
+    //        error: function (xhr, status, error) {
+    //        }
+    //    });
+    //});
 });
 
 $(document).ready(function () {
+    //var $parent = $(this).closest('.rate-star');
+    //var movieId = $parent.data('movie-id');
+    //var seriesId = $parent.data('series-id');
+
     var movieId = $('.rate-star').data('movie-id');
+    var seriesId = $('.rate-star').data('series-id');
 
-    $.ajax({
-        url: '/Movie/GetReview',
-        method: 'GET',
-        data: { MovieId: movieId },
-        success: function (response) {
-            $('#input-1').rating('update', response.rating);
-        },
-        error: function (xhr, status, error) {
-            console.log(error);
-        }
-    });
+    if (movieId !== undefined) {
+        $.ajax({
+            url: '/Movie/GetReview',
+            method: 'GET',
+            data: { MovieId: movieId },
+            success: function (response) {
+                $('#input-1').rating('update', response.rating);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    } else if (seriesId !== undefined) {
+        $.ajax({
+            url: '/Series/GetReview',
+            method: 'GET',
+            data: { SeriesId: seriesId },
+            success: function (response) {
+                $('#input-1').rating('update', response.rating);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
 
-    $.ajax({
-        url: '/Movie/GetAverageRating?MovieId=' + movieId,
-        type: 'GET',
-        success: function (data) {
-            $('#rating-value').text(data.averageRating.toFixed(1));
-        },
-        error: function (xhr, status, error) {
-            console.error(xhr.responseText);
-            $('#rating-value').text('?');
-        }
-    });
+    if (movieId !== undefined) {
+        $.ajax({
+            url: '/Movie/GetAverageRating?MovieId=' + movieId,
+            type: 'GET',
+            success: function (data) {
+                $('#rating-value').text(data.averageRating.toFixed(1));
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                $('#rating-value').text('?');
+            }
+        });
+    } else if (seriesId !== undefined) {
+        $.ajax({
+            url: '/Series/GetAverageRating?SeriesId=' + seriesId,
+            type: 'GET',
+            success: function (data) {
+                $('#rating-value').text(data.averageRating.toFixed(1));
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                $('#rating-value').text('?');
+            }
+        });
+    }
+    //$.ajax({
+    //    url: '/Movie/GetReview',
+    //    method: 'GET',
+    //    data: { MovieId: movieId },
+    //    success: function (response) {
+    //        $('#input-1').rating('update', response.rating);
+    //    },
+    //    error: function (xhr, status, error) {
+    //        console.log(error);
+    //    }
+    //});
+
+    //$.ajax({
+    //    url: '/Movie/GetAverageRating?MovieId=' + movieId,
+    //    type: 'GET',
+    //    success: function (data) {
+    //        $('#rating-value').text(data.averageRating.toFixed(1));
+    //    },
+    //    error: function (xhr, status, error) {
+    //        console.error(xhr.responseText);
+    //        $('#rating-value').text('?');
+    //    }
+    //});
 });

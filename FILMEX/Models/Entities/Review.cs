@@ -10,7 +10,5 @@ namespace FILMEX.Models.Entities
         public float Rating { get; set; }
 
         public User User { get; set; }
-
-        public Movie Movie { get; set; }
     }
 }

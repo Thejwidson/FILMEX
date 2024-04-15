@@ -17,7 +17,5 @@ namespace FILMEX.Models.Entities
         public int Rating { get; set; }
 
         public List<Actor> Actors { get; set; } = new List<Actor>();
-
-        public List<Review> Reviews { get; set; } = new List<Review>();
     }
 }

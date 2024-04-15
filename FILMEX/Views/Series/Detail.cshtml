@@ -24,10 +24,18 @@
                 <p>@Model.Description</p>
             </div>
         </div>
+
         <div class="col-md-6 d-flex flex-column align-items-start" style="width: 300px;">
-            <div class="rate-star" data-movie-id="@Model.Id">
-                <p style="margin-top: 10px;">Oceń ten serial</p>
+            <div class="rate-star" data-series-id="@Model.Id">
+                <p style="margin-top: 10px;">Oceń ten film</p>
                 <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="0.5" value="0">
+            </div>
+
+            <div id="average-rating" data-series-id="@Model.Id" style="margin-top: 10px;"></div>
+
+            <div id="average-rating" data-series-id="@Model.Id" style="margin-top: 10px;">
+                <img src="/util/icons8-star-48.png" alt="Star Icon" style="height: 48px; width: 48px; vertical-align: middle;">
+                <span id="rating-value" style="font-size: 48px; vertical-align: middle;"></span>
             </div>
         </div>
     </div>
@@ -104,7 +112,7 @@
 
 <a asp-action="Index">Back to List</a>
 
-@{
+@* @{
     <script>
         $(document).ready(function () {
             var movieId = $('.rate-star').data('movie-id');
@@ -123,4 +131,4 @@
             });
         });
     </script>
-}
+} *@

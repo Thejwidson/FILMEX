@@ -14,6 +14,7 @@ namespace FILMEX.Models
         public IFormFile CoverImage { get; set; }
         public List<Season> Seasons { get; set; } = new List<Season>();
         public List<MovieCategory> Categories { get; set; } = new List<MovieCategory>();
+        public List<Review> Reviews { get; set; } = new List<Review>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

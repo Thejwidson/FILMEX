@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using FILMEX.Models;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace FILMEX.Controllers
 {
@@ -201,6 +202,81 @@ namespace FILMEX.Controllers
             }
 
             return View(series);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateRating(int SeriesId, string Rating)
+        {
+            float rating = float.Parse(Rating, CultureInfo.InvariantCulture);
+            var series = _context.Series.FirstOrDefault(s => s.Id == SeriesId);
+
+            if (series == null)
+            {
+                return NotFound();
+            }
+
+            // Get the current user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the user has already rated the movie
+            var review = _context.ReviewsSeries.FirstOrDefault(r => r.Series.Id == SeriesId && r.User.Id == userId);
+            if (review == null)
+            {
+                review = new ReviewSeries
+                {
+                    Rating = rating,
+                    User = user,
+                    Series = series
+                };
+                series.Reviews.Add(review);
+                _context.ReviewsSeries.Add(review);
+            }
+            else
+            {
+                review.Rating = rating;
+                _context.ReviewsSeries.Update(review);
+            }
+
+            _context.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
+        // Get current user's review of the movie with the given ID to use in HTML code
+        [HttpGet]
+        public ActionResult GetReview(int SeriesId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var review = _context.ReviewsSeries.FirstOrDefault(r => r.Series.Id == SeriesId && r.User.Id == userId);
+
+            if (review == null)
+            {
+                return Json(new { rating = 0 });
+            }
+
+            return Json(new { rating = review.Rating });
+        }
+
+        // Get the average rating of the movie with the given ID to use in HTML code
+        [HttpGet]
+        public ActionResult GetAverageRating(int SeriesId)
+        {
+            var series = _context.Series.Include(m => m.Reviews).FirstOrDefault(s => s.Id == SeriesId);
+
+            if (series == null)
+            {
+                return NotFound();
+            }
+
+            var averageRating = series.Reviews.Count > 0 ? series.Reviews.Average(r => r.Rating) : 0;
+
+            return Json(new { averageRating });
         }
 
         // POST: Series/Delete/5
