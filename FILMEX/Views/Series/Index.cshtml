@@ -11,12 +11,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfEpisodes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfSeasons)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
@@ -39,12 +33,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfEpisodes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfSeasons)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
