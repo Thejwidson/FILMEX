@@ -12,6 +12,17 @@
     ViewBag.Title = "Index";
 }
 
+@{
+    var hours = (int)(@Model.Length / 60);
+    var minutes = (int)(@Model.Length % 60);
+    string length;
+
+    if (hours == 0)
+		length = minutes + "min";
+    else
+        length = hours + "h " + minutes + "min";
+}
+
 <h2>@Model.Title</h2>
 <div style="display: flex; align-items: top;">
     <div style="height:285px; width:200px;">
@@ -22,6 +33,18 @@
             <div class="mb-sm-0 mb-3" style="background-color: #f8f9fa; padding: 10px;">
                 <small class="text-muted fw-medium">Opis filmu:</small>
                 <p>@Model.Description</p>
+                
+                <br>
+                <span class="description-element">reżyseria</span>@Model.Director
+                <br>
+                <span class="description-element">scenariusz</span>@Model.Screenwriter
+                <br>
+                <span class="description-element">produkcja</span>@Model.Location
+                <br>
+                <span class="description-element">premiera</span>@Model.PublishDate.ToString("dd.MM.yyyy")
+                <br>
+                <span class="description-element">czas trwania</span><span style="text-align: right;">@length</span>
+
             </div>
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start" style="width: 300px;">
@@ -111,24 +134,3 @@
 
 <a asp-action="Index">Back to List</a>
 
-@{
-    // <script>
-    //     $(document).ready(function () {
-    //         var movieId = $('.rate-star').data('movie-id');
-
-    //         $.ajax({
-    //             url: '/Movie/GetReview',
-    //             method: 'GET',
-    //             data: { MovieId: movieId },
-    //             success: function (response) {
-    //                 $('#input-1').rating('update', response.rating);
-    //             },
-    //             error: function (xhr, status, error) {
-    //                 console.log(error);
-    //             }
-    //         });
-    //     });
-
-        
-    // </script>
-}

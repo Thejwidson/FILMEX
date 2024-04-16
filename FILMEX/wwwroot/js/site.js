@@ -380,6 +380,7 @@
 });
 
 $(document).ready(function () {
+    // Aktualizacja oceny filmu w polu w którym można ją nadać podczas wczytywania strony
     $('.rating').on('rating.change', function (event, value, caption) {
         var $parent = $(this).closest('.rate-star');
         var movieId = $parent.data('movie-id');
@@ -413,31 +414,9 @@ $(document).ready(function () {
             });
         }
     });
-
-    //$('.rating').on('rating.change', function (event, value, caption) {
-    //    var movieId = $(this).closest('.rate-star').data('movie-id');
-
-    //    $.ajax({
-    //        url: '/Movie/UpdateRating',
-    //        method: 'POST',
-
-    //        data: {
-    //            MovieId: movieId,
-    //            Rating: value
-    //        },
-    //        success: function (response) {
-    //        },
-    //        error: function (xhr, status, error) {
-    //        }
-    //    });
-    //});
 });
 
 $(document).ready(function () {
-    //var $parent = $(this).closest('.rate-star');
-    //var movieId = $parent.data('movie-id');
-    //var seriesId = $parent.data('series-id');
-
     var movieId = $('.rate-star').data('movie-id');
     var seriesId = $('.rate-star').data('series-id');
 

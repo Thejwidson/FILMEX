@@ -77,8 +77,10 @@ namespace FILMEX.Controllers
                 movieEntity.Title = movie.Title;
                 movieEntity.Description = movie.Description;
                 movieEntity.PublishDate = movie.PublishDate;
-                movieEntity.Rating = movie.Rating;
                 movieEntity.Length = movie.Length;
+                movieEntity.Director = movie.Director;
+                movieEntity.Screenwriter = movie.Screenwriter;
+                movieEntity.Location = movie.Location;
 
                 if (movie.CoverImage != null)
                 {
@@ -120,7 +122,9 @@ namespace FILMEX.Controllers
                 Title = movieEntity.Title,
                 Description = movieEntity.Description,
                 PublishDate = movieEntity.PublishDate,
-                Rating = movieEntity.Rating
+                Director = movieEntity.Director,
+                Screenwriter = movieEntity.Screenwriter,
+                Location = movieEntity.Location
             };
 
             return View(movieModel);
@@ -154,7 +158,9 @@ namespace FILMEX.Controllers
                     movieEntity.Title = movie.Title;
                     movieEntity.Description = movie.Description;
                     movieEntity.PublishDate = movie.PublishDate;
-                    movieEntity.Rating = movie.Rating;
+                    movieEntity.Director = movie.Director;
+                    movieEntity.Screenwriter = movie.Screenwriter;
+                    movieEntity.Location = movie.Location;
 
                     // dodanie obrazu i zapisanie AttachmentSource
                     if (movie.CoverImage != null)

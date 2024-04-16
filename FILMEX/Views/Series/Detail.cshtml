@@ -22,6 +22,15 @@
             <div class="mb-sm-0 mb-3" style="background-color: #f8f9fa; padding: 10px;">
                 <small class="text-muted fw-medium">Opis serialu:</small>
                 <p>@Model.Description</p>
+                
+                <br>
+                <span class="description-element">reżyseria</span>@Model.Director
+                <br>
+                <span class="description-element">scenariusz</span>@Model.Screenwriter
+                <br>
+                <span class="description-element">produkcja</span>@Model.Location
+                <br>
+                <span class="description-element">premiera</span>@Model.PublishDate.ToString("dd.MM.yyyy")
             </div>
         </div>
 

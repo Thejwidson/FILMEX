@@ -74,7 +74,9 @@ namespace FILMEX.Controllers
                 series.Title = seriesModel.Title;
                 series.Description = seriesModel.Description;
                 series.PublishDate = seriesModel.PublishDate;
-                series.Rating = seriesModel.Rating;
+                series.Director = seriesModel.Director;
+                series.Screenwriter = seriesModel.Screenwriter;
+                series.Location = seriesModel.Location;
 
                 if (seriesModel.CoverImage != null)
                 {
@@ -115,8 +117,10 @@ namespace FILMEX.Controllers
                 Title = series.Title,
                 Description = series.Description,
                 PublishDate = series.PublishDate,
-                Rating = series.Rating,
-             };
+                Director = series.Director,
+                Screenwriter = series.Screenwriter,
+                Location = series.Location
+            };
             return View(seriesModel);
         }
 
@@ -146,7 +150,10 @@ namespace FILMEX.Controllers
                     seriesEntity.Title = seriesModel.Title;
                     seriesEntity.Description = seriesModel.Description;
                     seriesEntity.PublishDate = seriesModel.PublishDate;
-                    seriesEntity.Rating = seriesModel.Rating;
+                    seriesEntity.Director = seriesModel.Director;
+                    seriesEntity.Screenwriter = seriesModel.Screenwriter;
+                    seriesEntity.Location = seriesModel.Location;
+
 
                     if (seriesModel.CoverImage != null)
                     {
@@ -377,7 +384,6 @@ namespace FILMEX.Controllers
             foreach (var comment in serie.Comments)
             {
                 _context.Entry(comment).Reference(c => c.Author).Load();
-                //_context.Entry(comment).Reference(c => c.Series).Load();
             }
 
             return View(serie);
