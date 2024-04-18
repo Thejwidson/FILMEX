@@ -11,12 +11,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfEpisodes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfSeasons)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
@@ -26,7 +20,13 @@
                 @Html.DisplayNameFor(model => model.PublishDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rating)
+                @Html.DisplayNameFor(model => model.Director)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Screenwriter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
             </th>
             <th>
                 <a asp-action="Create" class="btn btn-sm btn-success">
@@ -40,12 +40,6 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.NumberOfEpisodes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfSeasons)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
@@ -55,7 +49,13 @@
                 @Html.DisplayFor(modelItem => item.PublishDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Rating)
+                @Html.DisplayFor(modelItem => item.Director)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Screenwriter)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
             </td>
             <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>

@@ -12,16 +12,6 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="NumberOfEpisodes" class="control-label"></label>
-                <input asp-for="NumberOfEpisodes" class="form-control" />
-                <span asp-validation-for="NumberOfEpisodes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NumberOfSeasons" class="control-label"></label>
-                <input asp-for="NumberOfSeasons" class="form-control" />
-                <span asp-validation-for="NumberOfSeasons" class="text-danger"></span>
-            </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
@@ -39,9 +29,19 @@
                 <span asp-validation-for="PublishDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
+                <label asp-for="Director" class="control-label"></label>
+                <input asp-for="Director" class="form-control" />
+                <span asp-validation-for="Director" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Screenwriter" class="control-label"></label>
+                <input asp-for="Screenwriter" class="form-control" />
+                <span asp-validation-for="Screenwriter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CoverImage" class="control-label"></label>

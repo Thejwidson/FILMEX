@@ -22,12 +22,29 @@
             <div class="mb-sm-0 mb-3" style="background-color: #f8f9fa; padding: 10px;">
                 <small class="text-muted fw-medium">Opis serialu:</small>
                 <p>@Model.Description</p>
+                
+                <br>
+                <span class="description-element">reżyseria</span>@Model.Director
+                <br>
+                <span class="description-element">scenariusz</span>@Model.Screenwriter
+                <br>
+                <span class="description-element">produkcja</span>@Model.Location
+                <br>
+                <span class="description-element">premiera</span>@Model.PublishDate.ToString("dd.MM.yyyy")
             </div>
         </div>
+
         <div class="col-md-6 d-flex flex-column align-items-start" style="width: 300px;">
-            <div class="rate-star" data-movie-id="@Model.Id">
-                <p style="margin-top: 10px;">Oceń ten serial</p>
+            <div class="rate-star" data-series-id="@Model.Id">
+                <p style="margin-top: 10px;">Oceń ten film</p>
                 <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="0.5" value="0">
+            </div>
+
+            <div id="average-rating" data-series-id="@Model.Id" style="margin-top: 10px;"></div>
+
+            <div id="average-rating" data-series-id="@Model.Id" style="margin-top: 10px;">
+                <img src="/util/icons8-star-48.png" alt="Star Icon" style="height: 48px; width: 48px; vertical-align: middle;">
+                <span id="rating-value" style="font-size: 48px; vertical-align: middle;"></span>
             </div>
         </div>
     </div>
@@ -104,7 +121,7 @@
 
 <a asp-action="Index">Back to List</a>
 
-@{
+@* @{
     <script>
         $(document).ready(function () {
             var movieId = $('.rate-star').data('movie-id');
@@ -123,4 +140,4 @@
             });
         });
     </script>
-}
+} *@

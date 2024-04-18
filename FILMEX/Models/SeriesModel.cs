@@ -8,12 +8,13 @@ namespace FILMEX.Models
         public string Title { get; set; } = default!;
         public string Description { get; set; } = String.Empty;
         public DateTime PublishDate { get; set; }
-        public int Rating { get; set; }
-        public int NumberOfEpisodes {  get; set; }
-        public int NumberOfSeasons { get; set; }
         public IFormFile CoverImage { get; set; }
         public List<Season> Seasons { get; set; } = new List<Season>();
         public List<MovieCategory> Categories { get; set; } = new List<MovieCategory>();
+        public List<Review> Reviews { get; set; } = new List<Review>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public string Director { get; set; } = String.Empty;
+        public string Screenwriter { get; set; } = String.Empty;
+        public string Location { get; set; } = String.Empty;
     }
 }

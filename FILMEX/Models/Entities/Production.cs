@@ -14,10 +14,11 @@ namespace FILMEX.Models.Entities
 
         public DateTime PublishDate { get; set; }
 
-        public int Rating { get; set; }
-
         public List<Actor> Actors { get; set; } = new List<Actor>();
 
-        public List<Review> Reviews { get; set; } = new List<Review>();
+        public string Director { get; set; } = String.Empty;
+        public string Screenwriter { get; set; } = String.Empty;
+
+        public string Location { get; set; } = String.Empty;
     }
 }
