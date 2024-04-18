@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
 using System.Globalization;
+using FILMEX.Repos.Repositories;
 
 namespace FILMEX.Controllers
 {
@@ -21,6 +22,8 @@ namespace FILMEX.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironemt;
+
+        private readonly MovieRepository _movieRepository;
 
         public MovieController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironemt)
         {
@@ -32,7 +35,8 @@ namespace FILMEX.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Movies.ToListAsync());
+            var movies = await _movieRepository.GetAllMoviesAsync();
+            return View(movies);
         }
 
         // GET: Movie/Details/5
