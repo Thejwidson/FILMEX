@@ -22,13 +22,13 @@ namespace FILMEX.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironemt;
-
         private readonly MovieRepository _movieRepository;
 
-        public MovieController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironemt)
+        public MovieController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironemt, MovieRepository movieRepository)
         {
             _context = context;
             _webHostEnvironemt = webHostEnvironemt;
+            _movieRepository = movieRepository;
         }
 
         // GET: Movie
