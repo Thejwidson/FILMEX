@@ -166,7 +166,7 @@ namespace FILMEX.Controllers
         {
             if (id == null) return NotFound();
 
-            var movie = _movieRepository.FindMoviesAsync(id);
+            var movie = await _movieRepository.FindForDelete(id);
             //var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null) return NotFound();
 
@@ -247,8 +247,7 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
-            //var movie = _context.Movies.Include(m => m.Comments).FirstOrDefault(m => m.Comments.Any(c => c.Id == commentId));
-            var movie = await _movieRepository.FindMoviesAsync(commentId);
+            var movie = await _movieRepository.FindMovieWithCommentByIdAsync(commentId);
 
             if (movie == null) return NotFound();
 
@@ -264,7 +263,7 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
 
-            _movieRepository.RemoveComment(comment);
+            await _movieRepository.RemoveComment(comment);
 
             return View("Detail", movie);
         }
@@ -276,10 +275,14 @@ namespace FILMEX.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var movie = await _movieRepository.FindMoviesAsync(id);
-            if (movie != null) _movieRepository.RemoveMovie(movie);
+            if (movie != null)
+            {
+                await _movieRepository.RemoveMovie(movie);
+            }
 
             return RedirectToAction(nameof(Index));
         }
+
 
         public async Task<IActionResult> Detail(int id)
         {

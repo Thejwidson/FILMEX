@@ -2,6 +2,7 @@
 using FILMEX.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
+using System.ComponentModel.Design;
 using System.Linq;
 
 namespace FILMEX.Repos.Repositories
@@ -38,21 +39,31 @@ namespace FILMEX.Repos.Repositories
             return await _context.Movies.FindAsync(id);
         }
 
+        public async Task<Movie> FindForDelete(int? id)
+        {
+            return await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<Movie> FindMovieWithCommentByIdAsync(int? commentId)
+        {
+            return await _context.Movies.Include(m => m.Comments).FirstOrDefaultAsync(m => m.Comments.Any(c => c.Id == commentId));
+        }
+
         public void AddMovie(Movie movie)
         {
-            _context.Add(movie);
+            _context.Movies.Add(movie);
             _context.SaveChangesAsync();
         }
 
-        public void RemoveMovie(Movie movie)
+        public async Task RemoveMovie(Movie movie)
         {
-            _context.Remove(movie); //_context.Movies.Remove(movie);
-            _context.SaveChangesAsync();
+            _context.Movies.Remove(movie);
+            await _context.SaveChangesAsync();
         }
 
         public void UpdateMovie(Movie movie)
         {
-            _context.Update(movie);
+            _context.Movies.Update(movie);
             _context.SaveChangesAsync();
         }
 

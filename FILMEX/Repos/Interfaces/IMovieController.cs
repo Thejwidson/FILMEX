@@ -9,8 +9,10 @@ namespace FILMEX.Repos.Interfaces
         Task<Movie> GetMoviesWithCommentsAsync(int? id);
         Task<Movie> GetMoviesWithReviewsAsync(int? id);
         Task<Movie> FindMoviesAsync(int? id);
+        Task<Movie> FindForDelete(int? id);
+        Task<Movie> FindMovieWithCommentByIdAsync(int? id);
         void AddMovie(Movie movie);
-        void RemoveMovie(Movie movie);
+        Task RemoveMovie(Movie movie);
         void UpdateMovie(Movie movie);
 
         // User
