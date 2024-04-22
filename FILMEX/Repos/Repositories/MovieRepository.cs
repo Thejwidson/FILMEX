@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace FILMEX.Repos.Repositories
 {
@@ -47,10 +48,10 @@ namespace FILMEX.Repos.Repositories
             return await _context.Movies.Include(m => m.Comments).FirstOrDefaultAsync(m => m.Comments.Any(c => c.Id == commentId));
         }
 
-        public void AddMovie(Movie movie)
+        public async Task AddMovie(Movie movie)
         {
             _context.Movies.Add(movie);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task RemoveMovie(Movie movie)
@@ -59,10 +60,10 @@ namespace FILMEX.Repos.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public void UpdateMovie(Movie movie)
+        public async Task UpdateMovie(Movie movie)
         {
-            _context.Movies.Update(movie);
-            _context.SaveChangesAsync();
+            _context.Update(movie);
+            await _context.SaveChangesAsync();
         }
 
         // User
@@ -101,10 +102,10 @@ namespace FILMEX.Repos.Repositories
             _context.Entry(comment).Reference(c => c.Author).Load();
             _context.Entry(comment).Reference(c => c.Movie).Load();
         }
-        public void AddComment(Movie movie, Comment comment)
+        public async Task AddComment(Movie movie, Comment comment)
         {
             movie.Comments.Add(comment);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task RemoveComment(Comment comment)

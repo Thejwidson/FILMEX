@@ -11,9 +11,9 @@ namespace FILMEX.Repos.Interfaces
         Task<Movie> FindMoviesAsync(int? id);
         Task<Movie> FindForDelete(int? id);
         Task<Movie> FindMovieWithCommentByIdAsync(int? id);
-        void AddMovie(Movie movie);
+        Task AddMovie(Movie movie);
         Task RemoveMovie(Movie movie);
-        void UpdateMovie(Movie movie);
+        Task UpdateMovie(Movie movie);
 
         // User
         Task<User> FindUserAsync(string? id);
@@ -26,7 +26,7 @@ namespace FILMEX.Repos.Interfaces
         // Comment
         Task<Comment> FindCommentByIdAsync(int commentId);
         public void LoadCommentRelations(Comment comment);
-        public void AddComment(Movie movie, Comment comment);
+        Task AddComment(Movie movie, Comment comment);
         Task RemoveComment(Comment comment);
     }
 }
