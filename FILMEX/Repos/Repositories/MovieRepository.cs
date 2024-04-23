@@ -105,6 +105,7 @@ namespace FILMEX.Repos.Repositories
         public async Task AddComment(Movie movie, Comment comment)
         {
             movie.Comments.Add(comment);
+            _context.Add(comment);
             await _context.SaveChangesAsync();
         }
 
