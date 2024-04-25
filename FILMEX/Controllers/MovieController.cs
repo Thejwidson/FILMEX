@@ -15,47 +15,39 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
 using System.Globalization;
 using FILMEX.Repos.Repositories;
+using FILMEX.Repos.Interfaces;
+using System.Xml.Linq;
 
 namespace FILMEX.Controllers
 {
     public class MovieController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironemt;
-        private readonly MovieRepository _movieRepository;
+        private readonly IMovieController _movieRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public MovieController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironemt, MovieRepository movieRepository)
+        public MovieController(MovieRepository movieRepository, IWebHostEnvironment webHostEnvironemt)
         {
-            _context = context;
-            _webHostEnvironemt = webHostEnvironemt;
             _movieRepository = movieRepository;
+            _webHostEnvironment = webHostEnvironemt;
         }
 
         // GET: Movie
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var movies = await _movieRepository.GetAllMoviesAsync();
             return View(movies);
         }
 
-        // GET: Movie/Details/5
+        // GET: Movie/Details/
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var movie = await _context.Movies
-                .Include(m => m.Comments)
-                    .ThenInclude(c => c.Author)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
+            var movie = await _movieRepository.GetMoviesWithCommentsAsync(id);
+
+            if (movie == null) return NotFound();
 
             return View(movie);
         }
@@ -68,8 +60,6 @@ namespace FILMEX.Controllers
         }
 
         // POST: Movie/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -90,35 +80,29 @@ namespace FILMEX.Controllers
                 {
                     string folder = "movies/cover/";
                     folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName;
-                    string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder);
+                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
 
                     await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
 
                     movieEntity.AttachmentSource = folder;
                 }
 
-                _context.Add(movieEntity);
-                await _context.SaveChangesAsync();
+                _movieRepository.AddMovie(movieEntity);
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
         }
 
 
-        // GET: Movie/Edit/5
+        // GET: Movie/Edit/
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var movieEntity = await _context.Movies.FindAsync(id);
-            if (movieEntity == null)
-            {
-                return NotFound();
-            }
+            var movieEntity = await _movieRepository.FindMoviesAsync(id);
+
+            if (movieEntity == null) return NotFound();
 
             var movieModel = new Models.Movie
             {
@@ -135,113 +119,80 @@ namespace FILMEX.Controllers
         }
 
 
-        // POST: Movie/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Movie/Edit/
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, Models.Movie movie)
         {
-            if (id != movie.Id)
-            {
-                return NotFound();
-            }
+            if (id != movie.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
-                try
+                // znajdz film o danym ID
+                var movieEntity = await _movieRepository.FindMoviesAsync(id);
+                if (movieEntity == null) return NotFound();
+                // update danych istniejacego juz filmu
+                movieEntity.Title = movie.Title;
+                movieEntity.Description = movie.Description;
+                movieEntity.PublishDate = movie.PublishDate;
+                movieEntity.Director = movie.Director;
+                movieEntity.Screenwriter = movie.Screenwriter;
+                movieEntity.Location = movie.Location;
+
+                // dodanie obrazu i zapisanie AttachmentSource
+                if (movie.CoverImage != null)
                 {
-                    // znajdz film o danym ID
-                    var movieEntity = await _context.Movies.FindAsync(id);
-                    if (movieEntity == null)
-                    {
-                        return NotFound();
-                    }
-                    // update danych istniejacego juz filmu
-                    movieEntity.Title = movie.Title;
-                    movieEntity.Description = movie.Description;
-                    movieEntity.PublishDate = movie.PublishDate;
-                    movieEntity.Director = movie.Director;
-                    movieEntity.Screenwriter = movie.Screenwriter;
-                    movieEntity.Location = movie.Location;
+                    string folder = "movies/cover/";
+                    folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName; // nazwa pliku
+                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder); // sciezka do pliku
 
-                    // dodanie obrazu i zapisanie AttachmentSource
-                    if (movie.CoverImage != null)
-                    {
-                        string folder = "movies/cover/";
-                        folder += Guid.NewGuid().ToString() + movie.CoverImage.FileName; // nazwa pliku
-                        string serverFolder = Path.Combine(_webHostEnvironemt.WebRootPath, folder); // sciezka do pliku
+                    await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create)); // upload zdjecia
 
-                        await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create)); // upload zdjecia
-
-                        movieEntity.AttachmentSource = folder; // przypisanie sciezki do filmu w bazie danych
-                    }
-
-                    // update w baziedanych
-                    _context.Update(movieEntity);
-                    await _context.SaveChangesAsync();
+                    movieEntity.AttachmentSource = folder; // przypisanie sciezki do filmu w bazie danych
                 }
-                catch (DbUpdateConcurrencyException) // error catch
-                {
-                    if (!MovieExists(movie.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                // update w bazie danych
+                _movieRepository.UpdateMovie(movieEntity);
+
                 return RedirectToAction(nameof(Index)); // wroc do listy filmow
             }
-            return View(movie); // zostan na stronie edycji
+            return View(movie); // zostan na stronie edycji jezeli cos jest nie tak
         }
-
-
-
 
         // GET: Movie/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var movie = await _context.Movies
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
+            var movie = await _movieRepository.FindForDelete(id);
+            //var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            if (movie == null) return NotFound();
 
             return View(movie);
         }
 
         [HttpPost]
-        public ActionResult UpdateRating(int MovieId, string Rating)
+        public async Task<IActionResult> UpdateRating(int MovieId, string Rating)
         {
             float rating = float.Parse(Rating, CultureInfo.InvariantCulture);
-            var movie = _context.Movies.FirstOrDefault(m => m.Id == MovieId);
+            //var movie = _context.Movies.FirstOrDefault(m => m.Id == MovieId);
+            var movie = await _movieRepository.FindMoviesAsync(MovieId);
 
             if (movie == null)
-            {
                 return NotFound();
-            }
 
             // Get the current user
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            //var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = await _movieRepository.FindUserAsync(userId);
 
             if (user == null)
-            {
                 return NotFound();
-            }
 
             // Check if the user has already rated the movie
-            var review = _context.ReviewsMovie.FirstOrDefault(r => r.Movie.Id == MovieId && r.User.Id == userId);
+            var review = await _movieRepository.FindReviewByMovieIdAndUserIdAsync(MovieId, userId);
 
             if (review == null)
             {
@@ -251,29 +202,22 @@ namespace FILMEX.Controllers
                     User = user,
                     Movie = movie
                 };
-
-                movie.Reviews.Add(review);
-                _context.ReviewsMovie.Add(review);
+                _movieRepository.AddReview(movie, review);
             }
             else
             {
                 review.Rating = rating;
-                _context.ReviewsMovie.Update(review);
+                _movieRepository.UpdateReview(review);
             }
-
-
-            _context.SaveChanges();
-
             return Json(new { success = true });
         }
 
         // Get current user's review of the movie with the given ID to use in HTML code
         [HttpGet]
-        public ActionResult GetReview(int MovieId)
+        public async Task<IActionResult> GetReview(int MovieId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var review = _context.ReviewsMovie.FirstOrDefault(r => r.Movie.Id == MovieId && r.User.Id == userId);
-
+            var review = await _movieRepository.FindReviewByMovieIdAndUserIdAsync(MovieId, userId);
             if (review == null)
             {
                 return Json(new { rating = 0 });
@@ -284,9 +228,9 @@ namespace FILMEX.Controllers
 
         // Get the average rating of the movie with the given ID to use in HTML code
         [HttpGet]
-        public ActionResult GetAverageRating(int MovieId)
+        public async Task<IActionResult> GetAverageRating(int? MovieId)
         {
-            var movie = _context.Movies.Include(m => m.Reviews).FirstOrDefault(m => m.Id == MovieId);
+            var movie = await _movieRepository.GetMoviesWithReviewsAsync(MovieId);
 
             if (movie == null)
             {
@@ -301,30 +245,25 @@ namespace FILMEX.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteComment(int commentId)
+        public async Task<IActionResult> DeleteComment(int commentId)
         {
-            var movie = _context.Movies.Include(m => m.Comments).FirstOrDefault(m => m.Comments.Any(c => c.Id == commentId));
+            var movie = await _movieRepository.FindMovieWithCommentByIdAsync(commentId);
 
-            if (movie == null)
-            {
-                return NotFound();
-            }
+            if (movie == null) return NotFound();
 
             foreach (var comment1 in movie.Comments)
             {
-                _context.Entry(comment1).Reference(c => c.Author).Load();
-                _context.Entry(comment1).Reference(c => c.Movie).Load();
+                _movieRepository.LoadCommentRelations(comment1);
             }
 
-            var comment = _context.Comments.FirstOrDefault(c => c.Id == commentId);
+            var comment = await _movieRepository.FindCommentByIdAsync(commentId);
 
             if (comment == null)
             {
                 return NotFound();
             }
 
-            _context.Comments.Remove(comment);
-            _context.SaveChanges();
+            await _movieRepository.RemoveComment(comment);
 
             return View("Detail", movie);
         }
@@ -335,24 +274,20 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await _movieRepository.FindMoviesAsync(id);
             if (movie != null)
             {
-                _context.Movies.Remove(movie);
+                await _movieRepository.RemoveMovie(movie);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MovieExists(int id)
-        {
-            return _context.Movies.Any(e => e.Id == id);
-        }
 
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            var movie = _context.Movies.Include(m => m.Comments).FirstOrDefault(m => m.Id == id);
+            var movie = await _movieRepository.GetMoviesWithCommentsAsync(id);
+
             if (movie == null)
             {
                 return NotFound();
@@ -360,8 +295,7 @@ namespace FILMEX.Controllers
 
             foreach (var comment in movie.Comments)
             {
-                _context.Entry(comment).Reference(c => c.Author).Load();
-                _context.Entry(comment).Reference(c => c.Movie).Load();
+                _movieRepository.LoadCommentRelations(comment);
             }
 
             return View(movie);
@@ -370,7 +304,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         public async Task<IActionResult> NewComment(int id, string newComment)
         {
-            var movie = await _context.Movies.Include(m => m.Comments).FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await _movieRepository.GetMoviesWithCommentsAsync(id);
             if (movie == null)
                 return NotFound();
 
@@ -378,11 +312,11 @@ namespace FILMEX.Controllers
             {
                 // Get the current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                var user = await _movieRepository.FindUserAsync(userId);
 
                 if (user == null)
                 {
-                       return NotFound();
+                    return NotFound();
                 }
 
                 var comment = new Comment
@@ -393,8 +327,7 @@ namespace FILMEX.Controllers
                     Author = user
                 };
 
-                movie.Comments.Add(comment);
-                await _context.SaveChangesAsync();
+                _movieRepository.AddComment(movie, comment);
             }
 
             return RedirectToAction("Detail", "Movie", new { id });
