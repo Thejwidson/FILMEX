@@ -12,12 +12,14 @@ using FILMEX.Models;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using FILMEX.Repos.Repositories;
 
 namespace FILMEX.Controllers
 {
     public class SeriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly SeriesRepository _seriesRepository;
         private readonly IWebHostEnvironment _webHostEnvironemt;
 
         public SeriesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironemt)

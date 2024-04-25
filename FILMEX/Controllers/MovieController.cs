@@ -327,7 +327,7 @@ namespace FILMEX.Controllers
                     Author = user
                 };
 
-                _movieRepository.AddComment(movie, comment);
+                await _movieRepository.AddComment(movie, comment);
             }
 
             return RedirectToAction("Detail", "Movie", new { id });
@@ -357,7 +357,7 @@ namespace FILMEX.Controllers
 
             if (movieToWatch == null)
             {
-                _movieRepository.AddMovieToWatch(movie, user);
+                await _movieRepository.AddMovieToWatch(movie, user);
             }
 
             //return View();
@@ -382,7 +382,7 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
 
-            _movieRepository.RemoveMovieToWatch(movie, user);
+            await _movieRepository.RemoveMovieToWatch(movie, user);
 
             return RedirectToAction("GetFilmsToWatch", "UserLists");
         }
