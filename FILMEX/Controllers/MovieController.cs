@@ -399,5 +399,61 @@ namespace FILMEX.Controllers
 
             return RedirectToAction("Detail", "Movie", new { id });
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddToWatchList(int MovieId)
+        {
+            var movie = await _context.Movies.FindAsync(MovieId);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var movieToWatch = user.MoviesToWatch.FirstOrDefault(m =>m.Id == movie.Id);
+
+            if (movieToWatch == null)
+            {
+                user.MoviesToWatch.Add(movie);
+                await _context.SaveChangesAsync();
+            }
+
+            //return View();
+            return RedirectToAction("Detail", "Movie", new { id = MovieId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromWatchList(int MovieId)
+        {
+            var movie = await _context.Movies.FindAsync(MovieId);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.MoviesToWatch.Remove(movie);
+                        
+            await _context.SaveChangesAsync();
+            return RedirectToAction("GetFilmsToWatch", "UserLists");
+        }
+
     }
 }

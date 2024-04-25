@@ -11,6 +11,8 @@ namespace FILMEX.Models.Entities
         [Required]
         public string LastName { get; set; }
 
+        public List<Movie> MoviesToWatch { get; set; } = new List<Movie>();
+
         public string AttachmentSource { get; set; }
 
         public User()
