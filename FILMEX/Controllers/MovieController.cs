@@ -337,7 +337,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToWatchList(int MovieId)
         {
-            var movie = await _context.Movies.FindAsync(MovieId);
+            var movie = await _movieRepository.FindMoviesAsync(MovieId);
 
             if (movie == null)
             {
@@ -345,7 +345,8 @@ namespace FILMEX.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _context.Users.FindAsync(userId);
+            //var user = await _context.Users.FindAsync(userId);
+            var user = await _movieRepository.FindUserAsync(userId);
 
             if (user == null)
             {
@@ -356,8 +357,7 @@ namespace FILMEX.Controllers
 
             if (movieToWatch == null)
             {
-                user.MoviesToWatch.Add(movie);
-                await _context.SaveChangesAsync();
+                _movieRepository.AddMovieToWatch(movie, user);
             }
 
             //return View();
@@ -367,7 +367,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveFromWatchList(int MovieId)
         {
-            var movie = await _context.Movies.FindAsync(MovieId);
+            var movie = await _movieRepository.FindMoviesAsync(MovieId);
 
             if (movie == null)
             {
@@ -375,16 +375,15 @@ namespace FILMEX.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _movieRepository.FindUserAsync(userId);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            user.MoviesToWatch.Remove(movie);
-                        
-            await _context.SaveChangesAsync();
+            _movieRepository.RemoveMovieToWatch(movie, user);
+
             return RedirectToAction("GetFilmsToWatch", "UserLists");
         }
 

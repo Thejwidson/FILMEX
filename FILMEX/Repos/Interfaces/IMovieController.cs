@@ -28,5 +28,9 @@ namespace FILMEX.Repos.Interfaces
         public void LoadCommentRelations(Comment comment);
         Task AddComment(Movie movie, Comment comment);
         Task RemoveComment(Comment comment);
+
+        // MoviesToWatch
+        Task AddMovieToWatch(Movie movie, User user);
+        Task RemoveMovieToWatch(Movie movie, User user);
     }
 }

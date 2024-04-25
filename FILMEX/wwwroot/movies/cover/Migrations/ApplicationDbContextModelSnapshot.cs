@@ -193,7 +193,12 @@ namespace FILMEX.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Movie");
                 });
@@ -634,6 +639,13 @@ namespace FILMEX.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FILMEX.Models.Entities.Movie", b =>
+                {
+                    b.HasOne("FILMEX.Models.Entities.User", null)
+                        .WithMany("MoviesToWatch")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("FILMEX.Models.Entities.MovieCategory", b =>
                 {
                     b.HasOne("FILMEX.Models.Entities.Series", null)
@@ -790,6 +802,11 @@ namespace FILMEX.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Seasons");
+                });
+
+            modelBuilder.Entity("FILMEX.Models.Entities.User", b =>
+                {
+                    b.Navigation("MoviesToWatch");
                 });
 #pragma warning restore 612, 618
         }

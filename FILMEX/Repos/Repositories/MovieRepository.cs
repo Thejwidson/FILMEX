@@ -114,5 +114,18 @@ namespace FILMEX.Repos.Repositories
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
         }
+
+        // MoviesToWatch
+        public async Task AddMovieToWatch(Movie movie, User user)
+        {
+            user.MoviesToWatch.Add(movie);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveMovieToWatch(Movie movie, User user)
+        {
+            user.MoviesToWatch.Remove(movie);
+            await _context.SaveChangesAsync();
+        }
     }
 }
