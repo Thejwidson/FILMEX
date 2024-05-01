@@ -17,6 +17,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
 
 // dodawanie serwisow (repozytorii)
 builder.Services.AddScoped<MovieRepository>();
+builder.Services.AddScoped<SeriesRepository>();
 // ---
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

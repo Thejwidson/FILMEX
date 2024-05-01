@@ -32,7 +32,7 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var series = _seriesRepository.GetAllAsync();
+            var series = await _seriesRepository.GetAllAsync();
             return View(series);
         }
 
@@ -45,7 +45,7 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
 
-            var series = _seriesRepository.FindById(id);
+            var series = await _seriesRepository.FindById(id);
             if (series == null)
             {
                 return NotFound();
@@ -169,12 +169,10 @@ namespace FILMEX.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SeriesExists(seriesModel.Id))
-                    {
+                    if (!_seriesRepository.Any(seriesModel.Id)){
                         return NotFound();
                     }
-                    else
-                    {
+                    else{
                         throw;
                     }
                 }
@@ -204,10 +202,10 @@ namespace FILMEX.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateRating(int SeriesId, string Rating)
+        public async Task<IActionResult> UpdateRating(int SeriesId, string Rating)
         {
             float rating = float.Parse(Rating, CultureInfo.InvariantCulture);
-            var series = _seriesRepository.FindById(SeriesId); 
+            var series = await _seriesRepository.FindById(SeriesId);
 
             if (series == null) {
                 return NotFound();
@@ -215,7 +213,7 @@ namespace FILMEX.Controllers
 
             // Get the current user
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _seriesRepository.FindUserAsync(userId);
+            var user = await _seriesRepository.FindUserAsync(userId);
 
             if (user == null) {
                 return NotFound();
@@ -231,29 +229,25 @@ namespace FILMEX.Controllers
                     User = user,
                     Series = series
                 };
-                series.Reviews.Add(review);
-                _context.ReviewsSeries.Add(review);
+                _seriesRepository.AddReview(series, review);
             }
             else
             {
                 review.Rating = rating;
-                _context.ReviewsSeries.Update(review);
+                _seriesRepository.UpdateReview(review);
             }
-
-            _context.SaveChanges();
 
             return Json(new { success = true });
         }
 
         // Get current user's review of the movie with the given ID to use in HTML code
         [HttpGet]
-        public ActionResult GetReview(int SeriesId)
+        public async Task<IActionResult> GetReview(int SeriesId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var review = _context.ReviewsSeries.FirstOrDefault(r => r.Series.Id == SeriesId && r.User.Id == userId);
+            var review = _seriesRepository.FindReviewByIdAndUId(SeriesId, userId);
 
-            if (review == null)
-            {
+            if (review == null){
                 return Json(new { rating = 0 });
             }
 
@@ -262,9 +256,9 @@ namespace FILMEX.Controllers
 
         // Get the average rating of the movie with the given ID to use in HTML code
         [HttpGet]
-        public ActionResult GetAverageRating(int SeriesId)
+        public async Task<IActionResult> GetAverageRating(int SeriesId)
         {
-            var series = _context.Series.Include(m => m.Reviews).FirstOrDefault(s => s.Id == SeriesId);
+            var series = await _seriesRepository.FindById(SeriesId);
 
             if (series == null)
             {
@@ -282,13 +276,11 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var series = await _context.Series.FindAsync(id);
-            if (series != null)
-            {
-                _context.Series.Remove(series);
+            var series = await _seriesRepository.FindById(id);
+            if (series != null){
+                await _seriesRepository.Remove(series);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -296,16 +288,14 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult AddEpisode(int seriesId, int seasonId)
         {
-            var series = _context.Series.Include(s => s.Seasons).FirstOrDefault(s => s.Id == seriesId);
+            var series = _seriesRepository.FindByIdWithSeasons(seriesId);
 
-            if (series == null)
-            {
+            if (series == null){
                 return RedirectToAction(nameof(Index));
             }
 
             var seasons = new List<SelectListItem>();
-            foreach (Season season in series.Seasons)
-            {
+            foreach (Season season in series.Seasons){
                 seasons.Add(new SelectListItem { Value = season.Id.ToString(), Text = season.Title, Selected = (season.Id == seasonId) });
             }
 
@@ -326,8 +316,7 @@ namespace FILMEX.Controllers
             {
                 episode.SeasonId = seasonId;
                 episode.SeriesId = seriesId;
-                _context.Add(episode);
-                await _context.SaveChangesAsync();
+                await _seriesRepository.Add(episode);
 
                 return RedirectToAction(nameof(Index));
             } 
@@ -340,7 +329,7 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddSeason(int seriesId, Season season)
         {
-            var series = _context.Series.Include(s => s.Seasons).FirstOrDefault(s => s.Id == seriesId);
+            var series = _seriesRepository.FindByIdWithSeasons(seriesId);
             string title;
 
             if (series == null || !series.Seasons.Any())
@@ -357,21 +346,14 @@ namespace FILMEX.Controllers
 
             season.SeriesId = series.Id;
             season.Title = title;
-            _context.Add(season);
-            await _context.SaveChangesAsync();
+            await _seriesRepository.Add(season);
 
             return RedirectToAction(nameof(Index));
         }
 
-
-        private bool SeriesExists(int id)
-        {
-            return _context.Series.Any(e => e.Id == id);
-        }
-
         public IActionResult Detail(int id)
         {
-            var serie = _context.Series.Include(m => m.Comments).FirstOrDefault(m => m.Id == id);
+            var serie = _seriesRepository.FindWithComments(id);
             if (serie == null)
             {
                 return NotFound();
@@ -379,7 +361,7 @@ namespace FILMEX.Controllers
 
             foreach (var comment in serie.Comments)
             {
-                _context.Entry(comment).Reference(c => c.Author).Load();
+                _seriesRepository.LoadCommentRelations(comment);
             }
 
             return View(serie);
@@ -388,7 +370,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         public async Task<IActionResult> NewComment(int id, string newComment)
         {
-            var serie = await _context.Series.Include(m => m.Comments).FirstOrDefaultAsync(m => m.Id == id);
+            var serie = _seriesRepository.FindWithComments(id);
             if (serie == null)
                 return NotFound();
 
@@ -396,7 +378,7 @@ namespace FILMEX.Controllers
             {
                 // Get the current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                var user = await _seriesRepository.FindUserAsync(userId);
 
                 if (user == null)
                 {
@@ -409,9 +391,7 @@ namespace FILMEX.Controllers
                     CreatedOn = DateTime.Now,
                     Author = user
                 };
-
-                serie.Comments.Add(comment);
-                await _context.SaveChangesAsync();
+                await _seriesRepository.Add(serie, comment);
             }
 
             return RedirectToAction("Detail", "Movie", new { id });
