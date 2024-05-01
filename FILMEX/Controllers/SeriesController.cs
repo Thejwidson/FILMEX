@@ -13,18 +13,18 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using FILMEX.Repos.Repositories;
+using FILMEX.Repos.Interfaces;
 
 namespace FILMEX.Controllers
 {
     public class SeriesController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly SeriesRepository _seriesRepository;
+        private readonly ISeriesController _seriesRepository;
         private readonly IWebHostEnvironment _webHostEnvironemt;
 
-        public SeriesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironemt)
+        public SeriesController(SeriesRepository seriesRepository , IWebHostEnvironment webHostEnvironemt)
         {
-            _context = context;
+            _seriesRepository = seriesRepository;
             _webHostEnvironemt = webHostEnvironemt;
         }
 
@@ -32,7 +32,8 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Series.ToListAsync());
+            var series = _seriesRepository.GetAllAsync();
+            return View(series);
         }
 
         // GET: Series/Details/5
@@ -44,8 +45,7 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
 
-            var series = await _context.Series
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var series = _seriesRepository.FindById(id);
             if (series == null)
             {
                 return NotFound();
@@ -62,8 +62,6 @@ namespace FILMEX.Controllers
         }
 
         // POST: Series/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -71,7 +69,7 @@ namespace FILMEX.Controllers
         {
             if (ModelState.IsValid)
             {
-                Models.Entities.Series series = new Models.Entities.Series();
+                Series series = new Series();
                 series.Id = seriesModel.Id;
                 series.Title = seriesModel.Title;
                 series.Description = seriesModel.Description;
@@ -91,8 +89,7 @@ namespace FILMEX.Controllers
                     series.AttachmentSource = folder;
                 }
 
-                _context.Add(series);
-                await _context.SaveChangesAsync();
+                await _seriesRepository.Add(series);
                 return RedirectToAction(nameof(Index));
             }
             return View(seriesModel);
@@ -107,7 +104,8 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
 
-            var series = await _context.Series.FindAsync(id);
+            var series = await _seriesRepository.FindById(id);
+            
             if (series == null)
             {
                 return NotFound();
@@ -143,7 +141,7 @@ namespace FILMEX.Controllers
             {
                 try
                 {
-                    var seriesEntity = await _context.Series.FindAsync(id);
+                    var seriesEntity = await _seriesRepository.FindById(id);
                     if (seriesEntity == null)
                     {
                         return NotFound();
@@ -167,9 +165,7 @@ namespace FILMEX.Controllers
 
                         seriesEntity.AttachmentSource = folder;
                     }
-
-                    _context.Update(seriesEntity);
-                    await _context.SaveChangesAsync();
+                    await _seriesRepository.Update(seriesEntity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -197,8 +193,8 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
 
-            var series = await _context.Series
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var series = await _seriesRepository.FindById(id);
+
             if (series == null)
             {
                 return NotFound();
@@ -211,24 +207,22 @@ namespace FILMEX.Controllers
         public ActionResult UpdateRating(int SeriesId, string Rating)
         {
             float rating = float.Parse(Rating, CultureInfo.InvariantCulture);
-            var series = _context.Series.FirstOrDefault(s => s.Id == SeriesId);
+            var series = _seriesRepository.FindById(SeriesId); 
 
-            if (series == null)
-            {
+            if (series == null) {
                 return NotFound();
             }
 
             // Get the current user
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = _seriesRepository.FindUserAsync(userId);
 
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
 
             // Check if the user has already rated the movie
-            var review = _context.ReviewsSeries.FirstOrDefault(r => r.Series.Id == SeriesId && r.User.Id == userId);
+            var review = _seriesRepository.FindReview(SeriesId, userId);
             if (review == null)
             {
                 review = new ReviewSeries
