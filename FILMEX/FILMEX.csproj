@@ -24,6 +24,7 @@
     <Folder Include="wwwroot\movies\cover\" />
     <Folder Include="wwwroot\series\cover\" />
     <Folder Include="wwwroot\series\episode\cover\" />
+    <Folder Include="wwwroot\users\profileImage\" />
   </ItemGroup>
 
 </Project>

@@ -100,7 +100,7 @@ namespace FILMEX.Repos.Repositories
         public void LoadCommentRelations(Comment comment)
         {
             _context.Entry(comment).Reference(c => c.Author).Load();
-            _context.Entry(comment).Reference(c => c.Movie).Load();
+            _context.Entry(comment).Reference(c => c.Production).Load();
         }
         public async Task AddComment(Movie movie, Comment comment)
         {

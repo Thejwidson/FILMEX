@@ -56,6 +56,11 @@ namespace FILMEX.Repos.Repositories
             return _context.Series.Include(m => m.Comments).FirstOrDefault(m => m.Id == id);
         }
 
+        public async Task<Series> FindByCommentIdAsync(int? commentId)
+        {
+            return await _context.Series.Include(m => m.Comments).FirstOrDefaultAsync(m => m.Comments.Any(c => c.Id == commentId));
+        }
+
         // User
         public async Task<User> FindUserAsync(string? id)
         {
@@ -102,9 +107,20 @@ namespace FILMEX.Repos.Repositories
             _context.Entry(comment).Reference(c => c.Author).Load();
         }
 
+        public async Task<Comment> FindCommentByIdAsync(int commentId)
+        {
+            return await _context.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+        }
+
         public async Task Add(Series series, Comment comment)
         {
             series.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Remove(Series series, Comment comment)
+        {
+            series.Comments.Remove(comment);
             await _context.SaveChangesAsync();
         }
     }

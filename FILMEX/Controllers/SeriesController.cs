@@ -370,8 +370,8 @@ namespace FILMEX.Controllers
         [HttpPost]
         public async Task<IActionResult> NewComment(int id, string newComment)
         {
-            var serie = _seriesRepository.FindWithComments(id);
-            if (serie == null)
+            var series = _seriesRepository.FindWithComments(id);
+            if (series == null)
                 return NotFound();
 
             if (!string.IsNullOrEmpty(newComment))
@@ -388,13 +388,38 @@ namespace FILMEX.Controllers
                 var comment = new Comment
                 {
                     Content = newComment,
+                    Production = series,
                     CreatedOn = DateTime.Now,
                     Author = user
                 };
-                await _seriesRepository.Add(serie, comment);
+                await _seriesRepository.Add(series, comment);
             }
 
-            return RedirectToAction("Detail", "Movie", new { id });
+            return RedirectToAction("Detail", "Series", new { id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteComment(int commentId)
+        {
+            var series = await _seriesRepository.FindByCommentIdAsync(commentId);
+
+            if (series == null) return NotFound();
+
+            foreach (var comment1 in series.Comments)
+            {
+                _seriesRepository.LoadCommentRelations(comment1);
+            }
+
+            var comment = await _seriesRepository.FindCommentByIdAsync(commentId);
+
+            if (comment == null){
+                return NotFound();
+            }
+
+            await _seriesRepository.Remove(series, comment);
+
+            return View("Detail", series);
         }
     }
 }

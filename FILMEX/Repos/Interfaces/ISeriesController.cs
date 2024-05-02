@@ -13,6 +13,7 @@ namespace FILMEX.Repos.Interfaces
         Task Remove(Series series);
         bool Any(int? id);
         Series FindWithComments(int? id);
+        Task<Series> FindByCommentIdAsync(int? commentId);
 
         // User
         Task<User> FindUserAsync(string? id);
@@ -31,6 +32,8 @@ namespace FILMEX.Repos.Interfaces
 
         // Comment
         void LoadCommentRelations(Comment comment);
+        Task<Comment> FindCommentByIdAsync(int commentId);
         Task Add(Series series, Comment comment);
+        Task Remove(Series series, Comment comment);
     }
 }

@@ -87,7 +87,7 @@ namespace FILMEX.Controllers
                     movieEntity.AttachmentSource = folder;
                 }
 
-                _movieRepository.AddMovie(movieEntity);
+                await _movieRepository.AddMovie(movieEntity);
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
@@ -322,7 +322,7 @@ namespace FILMEX.Controllers
                 var comment = new Comment
                 {
                     Content = newComment,
-                    Movie = movie,
+                    Production = movie,
                     CreatedOn = DateTime.Now,
                     Author = user
                 };
