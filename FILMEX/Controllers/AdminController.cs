@@ -11,13 +11,11 @@ namespace FILMEX.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly ILogger<AdminController> _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
 
-        public AdminController(ILogger<AdminController> logger, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
-            _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
         }

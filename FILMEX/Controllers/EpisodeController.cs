@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using FILMEX.Data;
 using FILMEX.Models.Entities;
 
-namespace FILMEX.Controllers
+namespace FILMEX.Controllers // this whole class isn't being used at the moment
 {
     public class EpisodeController : Controller
     {

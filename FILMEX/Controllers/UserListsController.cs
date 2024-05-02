@@ -1,5 +1,7 @@
 ﻿using FILMEX.Data;
 using FILMEX.Models;
+using FILMEX.Repos.Interfaces;
+using FILMEX.Repos.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -8,12 +10,11 @@ namespace FILMEX.Controllers
 {
     public class UserListsController : Controller
     {
+        private readonly IUserListsController _userListsController;
 
-        private readonly ApplicationDbContext _context;
-
-        public UserListsController(ApplicationDbContext context)
+        public UserListsController(UserListsRepository userListsController)
         {
-            _context = context;
+            _userListsController = userListsController;
         }
 
         public IActionResult Index()
@@ -24,9 +25,7 @@ namespace FILMEX.Controllers
         public async Task<IActionResult> GetFilmsToWatch()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _context.Users
-                .Include(u => u.MoviesToWatch)
-                .FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _userListsController.FindUser(userId);
 
             if (user == null)
             {

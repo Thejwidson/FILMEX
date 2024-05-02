@@ -7,30 +7,30 @@ using Microsoft.AspNetCore.Mvc;
 using FILMEX.Models;
 using FILMEX.Models.Entities;
 using FILMEX.Data;
+using FILMEX.Repos.Interfaces;
+using FILMEX.Repos.Repositories;
 
 namespace FILMEX.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly IHomeController _homeController;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(HomeRepository homeController)
         {
-            _logger = logger;
-            _context = context;
+            _homeController = homeController;
         }
 
         public IActionResult Index()
-    {
-        var viewModel = new HomeViewModel
         {
-            Movies = _context.Movies.ToList(),
-            Series = _context.Series.ToList()
-        };
+            var viewModel = new HomeViewModel
+            {
+                Movies = _homeController.GetAllMovies(),
+                Series = _homeController.GetAllSeries()
+            };
 
-        return View(viewModel);
-    }
+            return View(viewModel);
+        }
 
         public IActionResult Privacy()
         {
@@ -41,9 +41,9 @@ namespace FILMEX.Controllers
         {
             var viewModel = new SearchViewModel
             {
-                Actors = _context.Actors.Where(a => a.Name.Contains(searchPhrase) || a.LastName.Contains(searchPhrase)).ToList(),
-                Movies = _context.Movies.Where(m => m.Title.Contains(searchPhrase)).ToList(),
-                Series = _context.Series.Where(s => s.Title.Contains(searchPhrase)).ToList(),
+                Actors = _homeController.SearchActors(searchPhrase),
+                Movies = _homeController.SearchMovies(searchPhrase),
+                Series = _homeController.SearchSeries(searchPhrase)
             };
 
             if (!String.IsNullOrEmpty(searchPhrase))
