@@ -17,7 +17,7 @@ namespace FILMEX.Repos.Repositories
         {
             return await _context.Series.ToListAsync();
         }
-
+    
         public async Task<Series> FindById(int? id)
         {
             return await _context.Series.FirstOrDefaultAsync(m => m.Id == id);
@@ -68,6 +68,10 @@ namespace FILMEX.Repos.Repositories
         }
 
         // Review
+        public Series FindByIdIncludeReviews(int? id)
+        {
+            return _context.Series.Include(m => m.Reviews).FirstOrDefault(s => s.Id == id);
+        }
         public ReviewSeries FindReview(int seriesId, string userId)
         {
             return _context.ReviewsSeries.FirstOrDefault(r => r.Series.Id == seriesId && r.User.Id == userId);
@@ -77,6 +81,7 @@ namespace FILMEX.Repos.Repositories
         {
             series.Reviews.Add(review);
             _context.ReviewsSeries.Add(review);
+            _context.SaveChanges();
         }
 
         public void UpdateReview(ReviewSeries review)

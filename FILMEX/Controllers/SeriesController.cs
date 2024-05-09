@@ -256,9 +256,9 @@ namespace FILMEX.Controllers
 
         // Get the average rating of the movie with the given ID to use in HTML code
         [HttpGet]
-        public async Task<IActionResult> GetAverageRating(int SeriesId)
+        public IActionResult GetAverageRating(int SeriesId)
         {
-            var series = await _seriesRepository.FindById(SeriesId);
+            var series = _seriesRepository.FindByIdIncludeReviews(SeriesId);
 
             if (series == null)
             {

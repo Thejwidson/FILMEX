@@ -20,6 +20,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
 builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddScoped<SeriesRepository>();
 builder.Services.AddScoped<HomeRepository>();
+builder.Services.AddScoped<UserListsRepository>();  
 // ---
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

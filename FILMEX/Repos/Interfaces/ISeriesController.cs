@@ -19,6 +19,7 @@ namespace FILMEX.Repos.Interfaces
         Task<User> FindUserAsync(string? id);
 
         // ReviewsMovie
+        Series FindByIdIncludeReviews(int? id);
         ReviewSeries FindReview(int seriesId, string userId);
         public void AddReview(Series movie, ReviewSeries review);
         public void UpdateReview(ReviewSeries review);

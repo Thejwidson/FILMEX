@@ -20,8 +20,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="wwwroot\movies\covers\" />
     <Folder Include="wwwroot\movies\cover\" />
+    <Folder Include="wwwroot\movies\covers\" />
     <Folder Include="wwwroot\series\cover\" />
     <Folder Include="wwwroot\series\episode\cover\" />
     <Folder Include="wwwroot\users\profileImage\" />
