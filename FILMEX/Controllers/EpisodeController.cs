@@ -33,7 +33,7 @@ namespace FILMEX.Controllers // this whole class isn't being used at the moment
             {
                 return NotFound();
             }
-            //ViewBag.Seasons = new SelectList(_context.Seasons.ToList(), "Id", "Id", episode.SeasonId); // Adjust according to your Season model
+
             return View(episode);
         }
 

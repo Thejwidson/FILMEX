@@ -87,6 +87,7 @@ namespace FILMEX.Repos.Repositories
         public void UpdateReview(ReviewSeries review)
         {
             _context.ReviewsSeries.Update(review);
+            _context.SaveChanges();
         }
 
         public ReviewSeries FindReviewByIdAndUId(int seriesId, string userId)
