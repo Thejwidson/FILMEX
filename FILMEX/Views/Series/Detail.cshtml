@@ -54,6 +54,12 @@
     <!-- Form for adding comments -->
     @if (User.Identity.IsAuthenticated)
     {
+        <form asp-controller="Series" asp-action="AddToWatchList" method="post">
+            <input type="hidden" name="SerieId" value="@Model.Id" />
+            <button type="submit" class="btn btn-info">AddToWatchList</button>
+        </form>
+        <br />
+
         <h3>Add a Comment</h3>
         <form asp-controller="Series" asp-action="NewComment" method="post">
             <input type="hidden" name="id" value="@Model.Id" />

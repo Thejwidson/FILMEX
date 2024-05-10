@@ -421,5 +421,57 @@ namespace FILMEX.Controllers
 
             return View("Detail", series);
         }
+        [HttpPost]
+        public async Task<IActionResult> AddToWatchList(int SerieId)
+        {
+            var serie = await _seriesRepository.FindSeriesAsync(SerieId);
+
+            if (serie == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var user = await _context.Users.FindAsync(userId);
+            var user = await _seriesRepository.FindUserAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var serieToWatch = user.SeriesToWatch.FirstOrDefault(s => s.Id == serie.Id);
+
+            if (serieToWatch == null)
+            {
+                await _seriesRepository.AddSerieToWatch(serie, user);
+            }
+
+            //return View();
+            return RedirectToAction("Detail", "Series", new { id = SerieId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromWatchList(int SerieId)
+        {
+            var serie = await _seriesRepository.FindSeriesAsync(SerieId);
+
+            if (serie == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _seriesRepository.FindUserAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await _seriesRepository.RemoveSerieToWatch(serie, user);
+
+            return RedirectToAction("GetSeriesToWatch", "UserLists");
+        }
     }
 }

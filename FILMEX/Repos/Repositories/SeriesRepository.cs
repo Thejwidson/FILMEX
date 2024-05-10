@@ -17,7 +17,12 @@ namespace FILMEX.Repos.Repositories
         {
             return await _context.Series.ToListAsync();
         }
-    
+
+        public async Task<Series> FindSeriesAsync(int? id)
+        {
+            return await _context.Series.FindAsync(id);
+        }
+
         public async Task<Series> FindById(int? id)
         {
             return await _context.Series.FirstOrDefaultAsync(m => m.Id == id);
@@ -127,6 +132,19 @@ namespace FILMEX.Repos.Repositories
         public async Task Remove(Series series, Comment comment)
         {
             series.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+        }
+        
+        // MoviesToWatch
+        public async Task AddSerieToWatch(Series serie, User user)
+        {
+            user.SeriesToWatch.Add(serie);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveSerieToWatch(Series serie, User user)
+        {
+            user.SeriesToWatch.Remove(serie);
             await _context.SaveChangesAsync();
         }
     }

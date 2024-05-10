@@ -4,6 +4,7 @@ namespace FILMEX.Repos.Interfaces
 {
     public interface IUserListsController
     {
-        Task<User> FindUser(string? id);
+        Task<User> FindUserWithMovies(string? id);
+        Task<User> FindUserWithSeries(string? id);
     }
 }

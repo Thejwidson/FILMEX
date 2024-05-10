@@ -8,6 +8,7 @@ namespace FILMEX.Repos.Interfaces
         Task<List<Series>> GetAllAsync();
         Task<Series> FindById(int? id);
         Series FindByIdWithSeasons(int? id);
+        Task<Series> FindSeriesAsync(int? id);
         Task Add(Series series);
         Task Update(Series series);
         Task Remove(Series series);
@@ -36,5 +37,9 @@ namespace FILMEX.Repos.Interfaces
         Task<Comment> FindCommentByIdAsync(int commentId);
         Task Add(Series series, Comment comment);
         Task Remove(Series series, Comment comment);
+
+        // SeriesToWatch
+        Task AddSerieToWatch(Series serie, User user);
+        Task RemoveSerieToWatch(Series serie, User user);
     }
 }

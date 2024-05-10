@@ -25,7 +25,7 @@ namespace FILMEX.Controllers
         public async Task<IActionResult> GetFilmsToWatch()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userListsController.FindUser(userId);
+            var user = await _userListsController.FindUserWithMovies(userId);
 
             if (user == null)
             {
@@ -35,7 +35,21 @@ namespace FILMEX.Controllers
             var GetFilmsToWatch = user.MoviesToWatch.ToList();
             return View(GetFilmsToWatch);
         }
-    
+
+        public async Task<IActionResult> GetSeriesToWatch()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userListsController.FindUserWithSeries(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var GetSeriesToWatch = user.SeriesToWatch.ToList();
+            return View(GetSeriesToWatch);
+        }
+
     }
 }
     
