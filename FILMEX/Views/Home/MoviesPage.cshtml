@@ -1,0 +1,36 @@
+﻿@model FILMEX.Models.MoviesPageViewModel
+
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Movies</h2>
+            <div class="row">
+                @foreach (var movie in Model.Movies)
+                {
+                    <div class="col-md-2">
+                        <div class="card">
+                            <img src="/@movie.AttachmentSource" class="card-img-top movie-image" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">@movie.Title</h5>
+                                <p class="card-text">@movie.Description</p>
+                                <a href="@Url.Action("Detail", "Movie", new { id = movie.Id })" class="btn btn-primary">See details</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .movie-image {
+        object-fit: cover; /* Maintain aspect ratio and cover entire area */
+    }
+</style>

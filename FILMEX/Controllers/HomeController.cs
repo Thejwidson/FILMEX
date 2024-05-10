@@ -58,6 +58,28 @@ namespace FILMEX.Controllers
             return View(viewModel);
         }
 
+        public IActionResult MoviesPage() 
+        {
+            var viewModel = new MoviesPageViewModel
+            {
+                Movies = _homeController.GetAllMovies()
+            };
+
+            return View(viewModel);
+
+        }
+
+        public IActionResult SeriesPage()
+        {
+            var viewModel = new SeriesPageViewModel
+            {
+                Series = _homeController.GetAllSeries()
+            };
+
+            return View(viewModel);
+
+        }
+
         /*[Authorize(Roles = "Admin")]
         public IActionResult AdminMenu() 
         {
