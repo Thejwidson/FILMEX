@@ -1,5 +1,7 @@
 ﻿using FILMEX.Data;
 using FILMEX.Models;
+using FILMEX.Models.Entities;
+using FILMEX.Models.ViewModels;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Repos.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -19,37 +21,34 @@ namespace FILMEX.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var viewModel = new HomeViewModel
+            {
+                Movies = _userListsController.GetAllMovies(),
+                Series = _userListsController.GetAllSeries()
+            };
+
+            return View(viewModel);
         }
 
-        public async Task<IActionResult> GetFilmsToWatch()
+        public async Task<IActionResult> ToWatch()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userListsController.FindUserWithMovies(userId);
+            var user2 = await _userListsController.FindUserWithSeries(userId);
 
             if (user == null)
             {
                 return NotFound(); 
             }
 
-            var GetFilmsToWatch = user.MoviesToWatch.ToList();
-            return View(GetFilmsToWatch);
-        }
-
-        public async Task<IActionResult> GetSeriesToWatch()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userListsController.FindUserWithSeries(userId);
-
-            if (user == null)
+            var viewModel = new HomeViewModel
             {
-                return NotFound();
-            }
+                Movies = user.MoviesToWatch.ToList(),
+                Series = user2.SeriesToWatch.ToList()
+            };
 
-            var GetSeriesToWatch = user.SeriesToWatch.ToList();
-            return View(GetSeriesToWatch);
+            return View(viewModel);
         }
-
     }
 }
     

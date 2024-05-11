@@ -471,7 +471,7 @@ namespace FILMEX.Controllers
 
             await _seriesRepository.RemoveSerieToWatch(serie, user);
 
-            return RedirectToAction("GetSeriesToWatch", "UserLists");
+            return RedirectToAction("ToWatch", "UserLists");
         }
     }
 }

@@ -384,7 +384,7 @@ namespace FILMEX.Controllers
 
             await _movieRepository.RemoveMovieToWatch(movie, user);
 
-            return RedirectToAction("GetFilmsToWatch", "UserLists");
+            return RedirectToAction("ToWatch", "UserLists");
         }
 
     }

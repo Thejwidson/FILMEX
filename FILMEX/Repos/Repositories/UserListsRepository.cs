@@ -13,6 +13,16 @@ namespace FILMEX.Repos.Repositories
             _context = context;
         }
 
+        public List<Movie> GetAllMovies()
+        {
+            return _context.Movies.ToList();
+        }
+
+        public List<Series> GetAllSeries()
+        {
+            return _context.Series.ToList();
+        }
+
         public async Task<User> FindUserWithMovies(string? id)
         {
             return await _context.Users.Include(u => u.MoviesToWatch).FirstOrDefaultAsync(u => u.Id == id);
