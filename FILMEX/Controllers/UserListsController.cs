@@ -55,8 +55,7 @@ namespace FILMEX.Controllers
         {
             TimeSpan remainingTime = releaseDate - DateTime.Now;
 
-            if (remainingTime.TotalMilliseconds <= 0)
-            {
+            if (remainingTime.TotalMilliseconds <= 0){
                 return "Released";
             }
 
