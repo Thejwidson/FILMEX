@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using FILMEX.Models.Entities;
 using FILMEX.Repos.Repositories;
 using FILMEX.Repos.Interfaces;
+using FILMEX.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -20,7 +21,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
 builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddScoped<SeriesRepository>();
 builder.Services.AddScoped<HomeRepository>();
-builder.Services.AddScoped<UserListsRepository>();  
+builder.Services.AddScoped<UserListsRepository>();
+builder.Services.AddScoped<UserListsController>();
 // ---
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

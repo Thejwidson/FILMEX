@@ -1,4 +1,5 @@
-﻿@using FILMEX.Models
+﻿@using FILMEX.Controllers
+@using FILMEX.Models
 @model FILMEX.Models.ViewModels.HomeViewModel
 @{
     ViewData["Title"] = "FilmsToWatch";
@@ -10,6 +11,7 @@
     <thead>
         <tr>
             <th>Title</th>
+            <th>Time Until Release</th>
             <th></th>
         </tr>
     </thead>
@@ -18,14 +20,12 @@
         {
             <tr>
                 <td>@movie.Title</td>
+                <td>@UserListsController.GetRemainingTime(movie.PublishDate)</td>
                 <td>
                     <form asp-controller="Movie" asp-action="RemoveFromWatchList" method="post">
                         <input type="hidden" name="MovieId" value="@movie.Id" />
                         <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
                     </form>
-                </td>
-                <td>
-                    @movie.PublishDate
                 </td>
             </tr>
         }
@@ -33,19 +33,14 @@
         {
             <tr>
                 <td>@serie.Title</td>
+                <td>@UserListsController.GetRemainingTime(serie.PublishDate)</td>
                 <td>
                     <form asp-controller="Series" asp-action="RemoveFromWatchList" method="post">
                         <input type="hidden" name="SerieId" value="@serie.Id" />
                         <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
                     </form>
                 </td>
-                <td>
-                    @serie.PublishDate
-                </td>
             </tr>
         }
     </tbody>
 </table>
-
-
-

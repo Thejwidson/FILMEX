@@ -7,6 +7,8 @@ namespace FILMEX.Repos.Interfaces
         List<Movie> GetAllMovies();
         List<Series> GetAllSeries();
         Task<User> FindUserWithMovies(string? id);
+        User FindUserWithMoviesNotAsync(string? id);
         Task<User> FindUserWithSeries(string? id);
+        User FindUserWithSeriesNotAsync(string? id);
     }
 }
