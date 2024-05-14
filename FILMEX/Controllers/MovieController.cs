@@ -310,6 +310,8 @@ namespace FILMEX.Controllers
             {
                 _movieRepository.LoadCommentRelations(comment);
             }
+            
+            _movieRepository.LoadCategoryRelations(movie);
 
             return View(movie);
         }

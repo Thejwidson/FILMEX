@@ -102,6 +102,12 @@ namespace FILMEX.Repos.Repositories
             _context.Entry(comment).Reference(c => c.Author).Load();
             _context.Entry(comment).Reference(c => c.Production).Load();
         }
+
+        public void LoadCategoryRelations(Movie movie)
+        {
+            _context.Entry(movie).Collection(m => m.Categories).Load();
+        }
+
         public async Task AddComment(Movie movie, Comment comment)
         {
             movie.Comments.Add(comment);
