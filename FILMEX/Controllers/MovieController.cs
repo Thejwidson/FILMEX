@@ -97,6 +97,7 @@ namespace FILMEX.Controllers
                     if (category != null)
                     {
                         movieEntity.Categories.Add(category);
+                        _categoryRepository.AddMovieToCategory(movieEntity, categoryIterator); // Tutaj coś może się lekko pieprzyć jezeli dodajemy kopię filmu a nie referencję
                     }
                 }
 

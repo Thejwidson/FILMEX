@@ -9,6 +9,7 @@ namespace FILMEX.Repos.Interfaces
         MovieCategory GetCategoryById(int id);
         void AddCategory(MovieCategory category);
         void UpdateCategory(MovieCategory category);
+        void AddMovieToCategory(Movie movie, int categoryId);
         void DeleteCategory(int id);
     }
 }

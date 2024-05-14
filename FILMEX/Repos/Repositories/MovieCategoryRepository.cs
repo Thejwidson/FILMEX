@@ -37,6 +37,11 @@ namespace FILMEX.Repos.Repositories
             _context.SaveChanges();
         }
 
+        public void AddMovieToCategory(Movie movie, int categoryId)
+        {
+            _context.MoviesCategories.FirstOrDefault(c => c.Id == categoryId).Movies.Add(movie);
+        }
+
         public void DeleteCategory(int id)
         {
             var category = _context.MoviesCategories.FirstOrDefault(c => c.Id == id);
