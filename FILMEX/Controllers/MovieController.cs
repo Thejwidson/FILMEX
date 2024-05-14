@@ -23,11 +23,13 @@ namespace FILMEX.Controllers
     public class MovieController : Controller
     {
         private readonly IMovieController _movieRepository;
+        private readonly IMovieCategoryController _categoryRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public MovieController(MovieRepository movieRepository, IWebHostEnvironment webHostEnvironemt)
+        public MovieController(MovieRepository movieRepository, MovieCategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironemt)
         {
             _movieRepository = movieRepository;
+            _categoryRepository = categoryRepository;
             _webHostEnvironment = webHostEnvironemt;
         }
 
@@ -56,6 +58,7 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
+            ViewBag.Categories = _categoryRepository.GetAllCategories();
             return View();
         }
 
@@ -63,7 +66,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(Models.Movie movie)
+        public async Task<IActionResult> Create(Models.Movie movie, List<int> SelectedCategories)
         {
             if (ModelState.IsValid)
             {
@@ -85,6 +88,16 @@ namespace FILMEX.Controllers
                     await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
 
                     movieEntity.AttachmentSource = folder;
+                }
+
+                // Assign categories from SelectedCategories to the movieEntity
+                foreach (var categoryIterator in SelectedCategories)
+                {
+                    var category = _categoryRepository.GetCategoryById(categoryIterator);
+                    if (category != null)
+                    {
+                        movieEntity.Categories.Add(category);
+                    }
                 }
 
                 await _movieRepository.AddMovie(movieEntity);

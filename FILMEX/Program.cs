@@ -21,6 +21,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
 builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddScoped<SeriesRepository>();
 builder.Services.AddScoped<HomeRepository>();
+builder.Services.AddScoped<MovieCategoryRepository>();
 builder.Services.AddScoped<UserListsRepository>();
 builder.Services.AddScoped<UserListsController>();
 // ---
@@ -78,6 +79,31 @@ app.MapControllerRoute(
     }
 
 }*/
+
+// Seed the database with initial data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+
+        String[] categories = { "Action", "Adventure", "Comedy", "Crime", "Drama", "Fantasy", "Historical", "Horror", "Mystery", "Romance", "Science Fiction", "Thriller", "Western" };
+
+        for (int i = 0; i < categories.Length; i++)
+        {
+            var category = new MovieCategory { CategoryName = categories[i] };
+            context.MoviesCategories.Add(category);
+        }
+
+        await context.SaveChangesAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
 
 
 app.Run();
