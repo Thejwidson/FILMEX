@@ -125,8 +125,11 @@ namespace FILMEX.Controllers
                 PublishDate = movieEntity.PublishDate,
                 Director = movieEntity.Director,
                 Screenwriter = movieEntity.Screenwriter,
-                Location = movieEntity.Location
+                Location = movieEntity.Location,
+                Categories = _categoryRepository.GetAllMovieCategoriesByMovieID(movieEntity.Id)
             };
+
+            ViewBag.Categories = _categoryRepository.GetAllCategories();
 
             return View(movieModel);
         }
@@ -136,7 +139,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, Models.Movie movie)
+        public async Task<IActionResult> Edit(int id, Models.Movie movie, List<int> SelectedCategories)
         {
             if (id != movie.Id) return NotFound();
 
@@ -163,6 +166,23 @@ namespace FILMEX.Controllers
                     await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create)); // upload zdjecia
 
                     movieEntity.AttachmentSource = folder; // przypisanie sciezki do filmu w bazie danych
+                }
+
+                // Usunięcie movie ze wszystkich kategorii
+                foreach (var category in _categoryRepository.GetAllMovieCategoriesByMovieID(movie.Id))
+                {
+                    _categoryRepository.DeleteMovieFromCategory(movie.Id, category.Id);
+                }
+
+                // Dodanie movie do kategorii z SelectedCategories
+                foreach (var categoryIterator in SelectedCategories)
+                {
+                    var category = _categoryRepository.GetCategoryById(categoryIterator);
+                    if (category != null)
+                    {
+                        movieEntity.Categories.Add(category);
+                        _categoryRepository.AddMovieToCategory(movieEntity, categoryIterator);
+                    }
                 }
 
                 // update w bazie danych
