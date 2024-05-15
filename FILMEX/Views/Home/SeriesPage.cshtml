@@ -1,8 +1,27 @@
-﻿@model FILMEX.Models.SeriesPageViewModel
+﻿@using FILMEX.Models.Entities
+@model FILMEX.Models.SeriesPageViewModel
 
 @{
     ViewData["Title"] = "Series";
+    List<SeriesCategory> categories = ViewBag.Categories;
 }
+
+<form asp-controller="Home" asp-action="SortSeriesByCategories" method="post">
+    <div class="form-group">
+        <label>Sort by category</label>
+        <select id="SelectedCategory" name="SelectedCategory" class="form-control">
+            <option value="">Select...</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category.CategoryName">@category.CategoryName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Sort" class="btn btn-sm btn-primary" />
+    </div>
+</form>
+<br />
 
 <div class="container">
     <div class="row">

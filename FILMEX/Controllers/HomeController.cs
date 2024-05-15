@@ -15,10 +15,15 @@ namespace FILMEX.Controllers
     public class HomeController : Controller
     {
         private readonly IHomeController _homeController;
+        private readonly IMovieCategoryController _movieCatController;
+        private readonly ISeriesCategoryController _seriesCatController;
 
-        public HomeController(HomeRepository homeController)
+        public HomeController(HomeRepository homeController, MovieCategoryRepository movieCatController, SeriesCategoryRepository seriesCatController)
         {
             _homeController = homeController;
+            _movieCatController = movieCatController;
+            _seriesCatController = seriesCatController;
+
         }
 
         public IActionResult Index()
@@ -58,12 +63,15 @@ namespace FILMEX.Controllers
             return View(viewModel);
         }
 
+
         public IActionResult MoviesPage() 
         {
             var viewModel = new MoviesPageViewModel
             {
                 Movies = _homeController.GetAllMovies()
             };
+
+            ViewBag.Categories = _movieCatController.GetAllCategories();
 
             return View(viewModel);
 
@@ -76,8 +84,50 @@ namespace FILMEX.Controllers
                 Series = _homeController.GetAllSeries()
             };
 
+            ViewBag.Categories = _seriesCatController.GetAllCategories();
+
             return View(viewModel);
 
+        }
+
+        public IActionResult SortMoviesByCategories(string selectedCategory)
+        {
+            var viewModel = new SearchViewModel
+            {
+                Movies = _homeController.SortMoviesByCategory(selectedCategory)
+            };
+
+            if (!String.IsNullOrEmpty(selectedCategory))
+            {
+                Console.WriteLine(selectedCategory);
+            }
+            else
+            {
+                Console.WriteLine("PUSTE");
+                return RedirectToAction("MoviesPage", "Home");
+            }
+
+            return View(viewModel);
+        }
+
+        public IActionResult SortSeriesByCategories(string selectedCategory)
+        {
+            var viewModel = new SearchViewModel
+            {
+                Series = _homeController.SortSeriesByCategory(selectedCategory)
+            };
+
+            if (!String.IsNullOrEmpty(selectedCategory))
+            {
+                Console.WriteLine(selectedCategory);
+            }
+            else
+            {
+                Console.WriteLine("PUSTE");
+                return RedirectToAction("SeriesPage", "Home");
+            }
+
+            return View(viewModel);
         }
 
         /*[Authorize(Roles = "Admin")]
