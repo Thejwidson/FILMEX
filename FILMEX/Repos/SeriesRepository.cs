@@ -3,7 +3,7 @@ using FILMEX.Models;
 using FILMEX.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace FILMEX.Repos.Repositories
+namespace FILMEX.Repos
 {
     public class SeriesRepository : Interfaces.ISeriesController
     {
@@ -44,7 +44,7 @@ namespace FILMEX.Repos.Repositories
             _context.Update(series);
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task Remove(Series series)
         {
             _context.Remove(series);
@@ -134,7 +134,7 @@ namespace FILMEX.Repos.Repositories
             series.Comments.Remove(comment);
             await _context.SaveChangesAsync();
         }
-        
+
         // MoviesToWatch
         public async Task AddSerieToWatch(Series serie, User user)
         {

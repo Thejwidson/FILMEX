@@ -2,8 +2,8 @@
 using FILMEX.Models;
 using FILMEX.Models.Entities;
 using FILMEX.Models.ViewModels;
+using FILMEX.Repos;
 using FILMEX.Repos.Interfaces;
-using FILMEX.Repos.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
