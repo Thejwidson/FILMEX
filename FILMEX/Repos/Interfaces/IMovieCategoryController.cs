@@ -11,6 +11,7 @@ namespace FILMEX.Repos.Interfaces
         void UpdateCategory(MovieCategory category);
         void AddMovieToCategory(Movie movie, int categoryId);
         void DeleteMovieFromCategory(int movieId, int categoryId);
+        void DeleteMovieFromAllCategories(int movieId);
         List<MovieCategory> GetAllMovieCategoriesByMovieID(int movieId);
         void DeleteCategory(int id);
     }

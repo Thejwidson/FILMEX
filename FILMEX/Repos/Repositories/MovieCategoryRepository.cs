@@ -53,6 +53,20 @@ namespace FILMEX.Repos.Repositories
             } 
         }
 
+        public void DeleteMovieFromAllCategories(int movieId)
+        {
+            var categories = _context.MoviesCategories.Where(c => c.Movies.Any(m => m.Id == movieId)).ToList();
+            foreach (var category in categories)
+            {
+                var movie = category.Movies.FirstOrDefault(m => m.Id == movieId);
+                if (movie != null)
+                {
+                    category.Movies.Remove(movie);
+                }
+            }
+            _context.SaveChanges();
+        }
+
         public List<MovieCategory> GetAllMovieCategoriesByMovieID(int movieId)
         {
             return _context.MoviesCategories.Where(c => c.Movies.Any(m => m.Id == movieId)).ToList();

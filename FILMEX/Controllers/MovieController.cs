@@ -169,11 +169,7 @@ namespace FILMEX.Controllers
                     movieEntity.AttachmentSource = folder; // przypisanie sciezki do filmu w bazie danych
                 }
 
-                // Usunięcie movie ze wszystkich kategorii
-                foreach (var category in _categoryRepository.GetAllMovieCategoriesByMovieID(movie.Id))
-                {
-                    _categoryRepository.DeleteMovieFromCategory(movie.Id, category.Id);
-                }
+                _categoryRepository.DeleteMovieFromAllCategories(movieEntity.Id);
 
                 // Dodanie movie do kategorii z SelectedCategories
                 foreach (var categoryIterator in SelectedCategories)
