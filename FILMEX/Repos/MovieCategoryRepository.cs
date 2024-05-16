@@ -4,7 +4,7 @@ using FILMEX.Data;
 using FILMEX.Models.Entities;
 using FILMEX.Repos.Interfaces;
 
-namespace FILMEX.Repos.Repositories
+namespace FILMEX.Repos
 {
     public class MovieCategoryRepository : IMovieCategoryController
     {

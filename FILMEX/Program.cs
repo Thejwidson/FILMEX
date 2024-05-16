@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using FILMEX.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using FILMEX.Models.Entities;
-using FILMEX.Repos.Repositories;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Controllers;
+using FILMEX.Repos;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
