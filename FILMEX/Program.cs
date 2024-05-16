@@ -95,8 +95,9 @@ using (var scope = app.Services.CreateScope())
         {
             var categoryMovie = new MovieCategory { CategoryName = categories[i] };
             var categorySeries = new SeriesCategory { CategoryName = categories[i] };
-            context.MoviesCategories.Add(categoryMovie);
-            context.SeriesCategories.Add(categorySeries);
+
+            if (!context.MoviesCategories.Any(c => c.CategoryName == categoryMovie.CategoryName)) { context.MoviesCategories.Add(categoryMovie); }
+            if (!context.SeriesCategories.Any(c => c.CategoryName == categorySeries.CategoryName)) { context.SeriesCategories.Add(categorySeries); }
         }
 
         await context.SaveChangesAsync();
