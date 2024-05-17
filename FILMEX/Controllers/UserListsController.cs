@@ -1,7 +1,6 @@
 ﻿using FILMEX.Data;
 using FILMEX.Models;
 using FILMEX.Models.Entities;
-using FILMEX.Models.ViewModels;
 using FILMEX.Repos;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Services;

@@ -1,5 +1,4 @@
 ﻿using FILMEX.Models;
-using FILMEX.Models.ViewModels;
 
 namespace FILMEX.Services.Interfaces
 {
