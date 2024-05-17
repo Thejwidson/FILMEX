@@ -41,19 +41,14 @@
                 <br>
                 <span class="description-element">produkcja</span>@Model.Location
                 <br>
-                @if (Model.Categories != null && Model.Categories.Any())
+                <span class="description-element">kategorie</span>
+                @foreach(var category in Model.Categories)
                 {
-                    <h4>Categories:</h4>
-                    <ul>
-                        @foreach (var category in Model.Categories)
-                        {
-                            <li>@category.CategoryName</li>
-                        }
-                    </ul>
-                }
-                else
-                {
-                    <p>No categories assigned</p>
+                    @category.CategoryName
+                    if(category != Model.Categories.Last())
+                    {
+                        <span>, </span>
+                    }
                 }
                 <br>
                 <span class="description-element">premiera</span>@Model.PublishDate.ToString("dd.MM.yyyy")

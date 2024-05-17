@@ -20,11 +20,13 @@ namespace FILMEX.Controllers
     public class SeriesController : Controller
     {
         private readonly ISeriesController _seriesRepository;
+        private readonly ISeriesCategoryController _categoryRepository;
         private readonly IWebHostEnvironment _webHostEnvironemt;
 
-        public SeriesController(SeriesRepository seriesRepository , IWebHostEnvironment webHostEnvironemt)
+        public SeriesController(SeriesRepository seriesRepository, SeriesCategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironemt)
         {
             _seriesRepository = seriesRepository;
+            _categoryRepository = categoryRepository;
             _webHostEnvironemt = webHostEnvironemt;
         }
 
@@ -58,6 +60,7 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
+            ViewBag.Categories = _categoryRepository.GetAllCategories();
             return View();
         }
 
@@ -65,7 +68,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(SeriesModel seriesModel)
+        public async Task<IActionResult> Create(SeriesModel seriesModel, List<int> SelectedCategories)
         {
             if (ModelState.IsValid)
             {
@@ -87,6 +90,17 @@ namespace FILMEX.Controllers
                     await seriesModel.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
 
                     series.AttachmentSource = folder;
+                }
+
+                // Assign categories from SelectedCategories to the movieEntity
+                foreach (var categoryIterator in SelectedCategories)
+                {
+                    var category = _categoryRepository.GetCategoryById(categoryIterator);
+                    if (category != null)
+                    {
+                        series.Categories.Add(category);
+                        _categoryRepository.AddSeriesToCategory(series, categoryIterator);
+                    }
                 }
 
                 await _seriesRepository.Add(series);
@@ -363,6 +377,8 @@ namespace FILMEX.Controllers
             {
                 _seriesRepository.LoadCommentRelations(comment);
             }
+
+            _seriesRepository.LoadCategoryRelations(serie);
 
             return View(serie);
         }

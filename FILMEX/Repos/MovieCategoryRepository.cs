@@ -37,6 +37,41 @@ namespace FILMEX.Repos
             _context.SaveChanges();
         }
 
+        public void AddMovieToCategory(Movie movie, int categoryId)
+        {
+            _context.MoviesCategories.FirstOrDefault(c => c.Id == categoryId).Movies.Add(movie);
+        }
+
+        public void DeleteMovieFromCategory(int movieId, int categoryId) 
+        { 
+            var category = _context.MoviesCategories.FirstOrDefault(c => c.Id == categoryId); 
+            var movie = category.Movies.FirstOrDefault(m => m.Id == movieId); 
+            if (movie != null)
+            {
+                category.Movies.Remove(movie); 
+                _context.SaveChanges(); 
+            } 
+        }
+
+        public void DeleteMovieFromAllCategories(int movieId)
+        {
+            var categories = _context.MoviesCategories.Where(c => c.Movies.Any(m => m.Id == movieId)).ToList();
+            foreach (var category in categories)
+            {
+                var movie = category.Movies.FirstOrDefault(m => m.Id == movieId);
+                if (movie != null)
+                {
+                    category.Movies.Remove(movie);
+                }
+            }
+            _context.SaveChanges();
+        }
+
+        public List<MovieCategory> GetAllMovieCategoriesByMovieID(int movieId)
+        {
+            return _context.MoviesCategories.Where(c => c.Movies.Any(m => m.Id == movieId)).ToList();
+        }
+
         public void DeleteCategory(int id)
         {
             var category = _context.MoviesCategories.FirstOrDefault(c => c.Id == id);

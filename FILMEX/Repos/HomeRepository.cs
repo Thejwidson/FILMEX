@@ -36,10 +36,24 @@ namespace FILMEX.Repos
                 .ToList();
         }
 
+        public List<Movie> SortMoviesByCategory(string selectedCategory)
+        {
+            return _context.Movies
+                .Where(m => m.Categories.Any(c => c.CategoryName == selectedCategory))
+                .ToList();
+        }
+
         public List<Series> SearchSeries(string searchPhrase)
         {
             return _context.Series
                 .Where(s => s.Title.Contains(searchPhrase))
+                .ToList();
+        }
+
+        public List<Series> SortSeriesByCategory(string selectedCategory)
+        {
+            return _context.Series
+                .Where(s => s.Categories.Any(c => c.CategoryName == selectedCategory))
                 .ToList();
         }
     }

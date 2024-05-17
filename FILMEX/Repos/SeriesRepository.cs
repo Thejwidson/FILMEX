@@ -117,6 +117,10 @@ namespace FILMEX.Repos
         {
             _context.Entry(comment).Reference(c => c.Author).Load();
         }
+        public void LoadCategoryRelations(Series series)
+        {
+            _context.Entry(series).Collection(m => m.Categories).Load();
+        }
 
         public async Task<Comment> FindCommentByIdAsync(int commentId)
         {

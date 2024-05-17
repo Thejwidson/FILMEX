@@ -24,6 +24,7 @@ builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddScoped<SeriesRepository>();
 builder.Services.AddScoped<HomeRepository>();
 builder.Services.AddScoped<MovieCategoryRepository>();
+builder.Services.AddScoped<SeriesCategoryRepository>();
 builder.Services.AddScoped<UserListsRepository>();
 // dodawanie serwisow
 builder.Services.AddScoped<UserListsService>();
@@ -96,8 +97,11 @@ using (var scope = app.Services.CreateScope())
 
         for (int i = 0; i < categories.Length; i++)
         {
-            var category = new MovieCategory { CategoryName = categories[i] };
-            context.MoviesCategories.Add(category);
+            var categoryMovie = new MovieCategory { CategoryName = categories[i] };
+            var categorySeries = new SeriesCategory { CategoryName = categories[i] };
+
+            if (!context.MoviesCategories.Any(c => c.CategoryName == categoryMovie.CategoryName)) { context.MoviesCategories.Add(categoryMovie); }
+            if (!context.SeriesCategories.Any(c => c.CategoryName == categorySeries.CategoryName)) { context.SeriesCategories.Add(categorySeries); }
         }
 
         await context.SaveChangesAsync();
