@@ -4,6 +4,8 @@ using FILMEX.Models.Entities;
 using FILMEX.Models.ViewModels;
 using FILMEX.Repos;
 using FILMEX.Repos.Interfaces;
+using FILMEX.Services;
+using FILMEX.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -14,40 +16,26 @@ namespace FILMEX.Controllers
     public class UserListsController : Controller
     {
         private readonly IUserListsController _userListsController;
+        private readonly IUserListsService _userListsService;
 
-        public UserListsController(UserListsRepository userListsController)
+        public UserListsController(UserListsRepository userListsController, UserListsService userListsService)
         {
             _userListsController = userListsController;
+            _userListsService = userListsService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var viewModel = new HomeViewModel
-            {
-                Movies = _userListsController.GetAllMovies(),
-                Series = _userListsController.GetAllSeries()
-            };
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var viewModel = await _userListsService.GetUserMSListsHome(userId);
             return View(viewModel);
         }
 
+        // GET: UserLists/ToWatch
         public async Task<IActionResult> ToWatch()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userListsController.FindUserWithMovies(userId);
-            var user2 = await _userListsController.FindUserWithSeries(userId);
-
-            if (user == null)
-            {
-                return NotFound(); 
-            }
-
-            var viewModel = new HomeViewModel
-            {
-                Movies = user.MoviesToWatch.ToList(),
-                Series = user2.SeriesToWatch.ToList()
-            };
-
+            var viewModel = await _userListsService.GetUserMSLists(userId);
             return View(viewModel);
         }
 
