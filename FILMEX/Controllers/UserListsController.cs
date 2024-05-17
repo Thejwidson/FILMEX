@@ -14,12 +14,10 @@ namespace FILMEX.Controllers
 {
     public class UserListsController : Controller
     {
-        private readonly IUserListsController _userListsController;
         private readonly IUserListsService _userListsService;
 
-        public UserListsController(UserListsRepository userListsController, UserListsService userListsService)
+        public UserListsController(UserListsService userListsService)
         {
-            _userListsController = userListsController;
             _userListsService = userListsService;
         }
 
