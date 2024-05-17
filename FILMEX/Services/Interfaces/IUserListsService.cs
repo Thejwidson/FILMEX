@@ -1,11 +1,12 @@
-﻿using FILMEX.Models.ViewModels;
-using FILMEX.Views.UserLists;
+﻿using FILMEX.Models;
+using FILMEX.Models.ViewModels;
 
 namespace FILMEX.Services.Interfaces
 {
     public interface IUserListsService
     {
-        Task<HomeViewModel> GetUserMSListsHome(string userId);
         Task<ToWatchViewModel> GetUserMSLists(string userId);
+        string GetRemainingTime(DateTime releaseDate);
+        Task<int> GetItemsReleasingTodayCountAsync(string userId);
     }
 }

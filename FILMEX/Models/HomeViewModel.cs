@@ -1,7 +1,7 @@
 ﻿using FILMEX.Models.Entities;
 using System.Collections.Generic;
 
-namespace FILMEX.Models.ViewModels
+namespace FILMEX.Models
 {
     public class HomeViewModel
     {
