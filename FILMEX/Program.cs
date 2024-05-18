@@ -9,6 +9,7 @@ using FILMEX.Controllers;
 using FILMEX.Repos;
 using FILMEX.Services.Interfaces;
 using FILMEX.Services;
+using FILMEX.Repos.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");

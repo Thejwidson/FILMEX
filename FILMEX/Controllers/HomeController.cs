@@ -8,6 +8,7 @@ using FILMEX.Models.Entities;
 using FILMEX.Data;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Repos;
+using FILMEX.Repos.Repositories;
 
 namespace FILMEX.Controllers
 {
