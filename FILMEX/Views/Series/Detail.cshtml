@@ -1,0 +1,159 @@
+﻿@model FILMEX.Models.Entities.Series
+@using FILMEX.Models.Entities
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>@Model.Title</h2>
+<div style="display: flex; align-items: top;">
+    <div style="height:285px; width:200px;">
+    <img src="/@Model.AttachmentSource" class="img-thumbnail" alt="Series Cover" style="margin-right: 10px;">
+    </div>
+    <div class="row">
+        <div class="col-md-6 d-flex flex-column align-items-start" style="width: 600px;">
+            <div class="mb-sm-0 mb-3" style="background-color: #f8f9fa; padding: 10px;">
+                <small class="text-muted fw-medium">Opis serialu:</small>
+                <p>@Model.Description</p>
+                
+                <br>
+                <span class="description-element">reżyseria</span>@Model.Director
+                <br>
+                <span class="description-element">scenariusz</span>@Model.Screenwriter
+                <br>
+                <span class="description-element">produkcja</span>@Model.Location
+                <br>
+                <span class="description-element">kategorie</span>
+                @foreach (var category in Model.Categories)
+                {
+                    @category.CategoryName
+                    if (category != Model.Categories.Last())
+                    {
+                        <span>, </span>
+                    }
+                }
+                <br>
+                <span class="description-element">premiera</span>@Model.PublishDate.ToString("dd.MM.yyyy")
+            </div>
+        </div>
+
+        <div class="col-md-6 d-flex flex-column align-items-start" style="width: 300px;">
+            <div class="rate-star" data-series-id="@Model.Id">
+                <p style="margin-top: 10px;">Oceń ten film</p>
+                <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="0.5" value="0">
+            </div>
+
+            <div id="average-rating" data-series-id="@Model.Id" style="margin-top: 10px;"></div>
+
+            <div id="average-rating" data-series-id="@Model.Id" style="margin-top: 10px;">
+                <img src="/util/icons8-star-48.png" alt="Star Icon" style="height: 48px; width: 48px; vertical-align: middle;">
+                <span id="rating-value" style="font-size: 48px; vertical-align: middle;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 50px;">
+    <!-- Form for adding comments -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form asp-controller="Series" asp-action="AddToWatchList" method="post">
+            <input type="hidden" name="SerieId" value="@Model.Id" />
+            <button type="submit" class="btn btn-info">AddToWatchList</button>
+        </form>
+        <br />
+
+        <h3>Add a Comment</h3>
+        <form asp-controller="Series" asp-action="NewComment" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="form-group">
+                <label for="newComment">Comment:</label>
+                <textarea id="newComment" name="newComment" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+    }
+    else
+    {
+        <a class="reply-btn btn" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="~/Movie/@Model.Id">Login to Comment on this Movie</a>
+    }
+</div>
+
+<div>
+    <div class="">
+        <!-- Komentarze -->
+        <section style="background-color: #f7f6f6;">
+            <div class="container my-5 py-5 text-dark">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-12 col-lg-10 col-xl-8">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="text-dark mb-0">Comments (@Model.Comments.Count())</h4>
+                        </div>
+                        @foreach (var comment in Model.Comments)
+                        {
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex flex-start">
+                                        <img class="rounded-circle shadow-1-strong me-3" src="/@comment.Author.AttachmentSource" alt="avatar" width="40" height="40" />
+                                        <div class="w-100">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h6 class="text-primary fw-bold mb-0">
+                                                    @comment.Author.UserName
+                                                </h6>
+                                                <p class="mb-0">@comment.CreatedOn.ToString("dd.MM.yyyy")</p>
+                                            </div>
+                                            <div class="d-flex flex-column align-items-left">
+                                                <p class="text-dark">@comment.Content</p>
+                                                <p class="small mb-0" style="color: #aaa;">
+                                                    @if (User.IsInRole("Admin"))
+                                                    {
+                                                        <form asp-controller="Series" asp-action="DeleteComment" method="post">
+                                                            <input type="hidden" name="commentId" value="@comment.Id" />
+                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                        </form>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+    </div>
+</div>
+
+<a asp-action="Index">Back to List</a>
+
+@* @{
+    <script>
+        $(document).ready(function () {
+            var movieId = $('.rate-star').data('movie-id');
+
+            $.ajax({
+                url: '/Movie/GetReview',
+                method: 'GET',
+                data: { MovieId: movieId },
+                success: function (response) {
+                    $('#input-1').rating('update', response.rating);
+                    // $('#input-1').val(response.rating);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+} *@

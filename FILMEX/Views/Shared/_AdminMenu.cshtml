@@ -1,0 +1,14 @@
+﻿@using FILMEX.Models.Entities
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+    {
+        <li class="nav-item">
+            <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index" title="Admin Panel">Admin Panel</a>
+        </li>
+    }
+</ul>
