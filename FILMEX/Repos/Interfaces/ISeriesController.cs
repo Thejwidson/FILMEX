@@ -34,7 +34,6 @@ namespace FILMEX.Repos.Interfaces
 
         // Comment
         void LoadCommentRelations(Comment comment);
-        public void LoadCategoryRelations(Series series);
         Task<Comment> FindCommentByIdAsync(int commentId);
         Task Add(Series series, Comment comment);
         Task Remove(Series series, Comment comment);

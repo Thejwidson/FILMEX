@@ -1,4 +1,4 @@
-﻿namespace FILMEX.Repos.Repositories
+﻿namespace FILMEX.Repos
 {
     public class ActorRepository
     {

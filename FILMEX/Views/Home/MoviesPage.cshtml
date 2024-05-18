@@ -1,27 +1,8 @@
 ﻿@model FILMEX.Models.MoviesPageViewModel
-@using FILMEX.Models.Entities
 
 @{
     ViewData["Title"] = "Movies";
-    List<MovieCategory> categories = ViewBag.Categories;
 }
-<form asp-controller="Home" asp-action="SortMoviesByCategories" method="post">
-    <div class="form-group">
-        <label>Sort by category</label>
-        <select id="SelectedCategory" name="SelectedCategory" class="form-control">
-            <option value="">Select...</option>
-            @foreach (var category in ViewBag.Categories)
-            {
-                <option value="@category.CategoryName">@category.CategoryName</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Sort" class="btn btn-sm btn-primary" />
-    </div>
-</form>
-
-<br />
 
 <div class="container">
     <div class="row">
