@@ -4,12 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using FILMEX.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using FILMEX.Models.Entities;
+using FILMEX.Repos.Repositories;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Controllers;
-using FILMEX.Repos;
-using FILMEX.Services.Interfaces;
-using FILMEX.Services;
-using FILMEX.Repos.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -20,15 +17,13 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-// dodawanie repozytorii
+// dodawanie serwisow (repozytorii)
 builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddScoped<SeriesRepository>();
 builder.Services.AddScoped<HomeRepository>();
 builder.Services.AddScoped<MovieCategoryRepository>();
 builder.Services.AddScoped<SeriesCategoryRepository>();
 builder.Services.AddScoped<UserListsRepository>();
-// dodawanie serwisow
-builder.Services.AddScoped<UserListsService>();
 builder.Services.AddScoped<UserListsController>();
 // ---
 builder.Services.AddControllersWithViews();

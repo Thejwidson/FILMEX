@@ -12,9 +12,8 @@ using FILMEX.Models;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Globalization;
-using FILMEX.Repos.Interfaces;
-using FILMEX.Repos;
 using FILMEX.Repos.Repositories;
+using FILMEX.Repos.Interfaces;
 
 namespace FILMEX.Controllers
 {

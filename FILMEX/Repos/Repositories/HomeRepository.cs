@@ -2,7 +2,7 @@
 using FILMEX.Models.Entities;
 using FILMEX.Repos.Interfaces;
 
-namespace FILMEX.Repos
+namespace FILMEX.Repos.Repositories
 {
     public class HomeRepository : IHomeController
     {

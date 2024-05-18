@@ -3,7 +3,7 @@ using FILMEX.Models.Entities;
 using FILMEX.Repos.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace FILMEX.Repos
+namespace FILMEX.Repos.Repositories
 {
     public class UserListsRepository : IUserListsController
     {
@@ -30,7 +30,7 @@ namespace FILMEX.Repos
 
         public User FindUserWithMoviesNotAsync(string? id)
         {
-            return _context.Users.Include(u => u.MoviesToWatch).FirstOrDefault(u => u.Id == id);
+            return  _context.Users.Include(u => u.MoviesToWatch).FirstOrDefault(u => u.Id == id);
         }
 
         public async Task<User> FindUserWithSeries(string? id)

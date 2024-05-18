@@ -14,9 +14,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
 using System.Globalization;
+using FILMEX.Repos.Repositories;
 using FILMEX.Repos.Interfaces;
 using System.Xml.Linq;
-using FILMEX.Repos;
 
 namespace FILMEX.Controllers
 {
