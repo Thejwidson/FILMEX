@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\movies\cover\" />
     <Folder Include="wwwroot\movies\covers\" />
     <Folder Include="wwwroot\series\cover\" />
