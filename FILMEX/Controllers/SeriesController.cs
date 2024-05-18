@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Repos;
+using FILMEX.Repos.Repositories;
 
 namespace FILMEX.Controllers
 {
