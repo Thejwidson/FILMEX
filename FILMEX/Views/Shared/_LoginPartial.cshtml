@@ -18,7 +18,7 @@
                 </svg>
                 ToWatch
                 <span class="position-absolute top-0 start-1 translate-middle badge rounded-pill bg-danger">
-                    @UserListsController.GetItemsReleasingTodayCount(User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    @await UserListsController.GetItemsReleasingTodayCount(User.FindFirstValue(ClaimTypes.NameIdentifier))
                     <span class="visually-hidden">movies releasing today</span>
                 </span>
             </button>

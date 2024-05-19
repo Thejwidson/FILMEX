@@ -4,6 +4,8 @@ using FILMEX.Models.Entities;
 using FILMEX.Models.ViewModels;
 using FILMEX.Repos;
 using FILMEX.Repos.Interfaces;
+using FILMEX.Services.Interfaces;
+using FILMEX.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -14,40 +16,26 @@ namespace FILMEX.Controllers
     public class UserListsController : Controller
     {
         private readonly IUserListsController _userListsController;
+        private readonly IUserListsService _userListsService;
 
-        public UserListsController(UserListsRepository userListsController)
+        public UserListsController(UserListsRepository userListsController, UserListsService userListsService)
         {
             _userListsController = userListsController;
+            _userListsService = userListsService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var viewModel = new HomeViewModel
-            {
-                Movies = _userListsController.GetAllMovies(),
-                Series = _userListsController.GetAllSeries()
-            };
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var viewModel = await _userListsService.GetUserMSLists(userId);
             return View(viewModel);
         }
 
+        // GET: UserLists/ToWatch
         public async Task<IActionResult> ToWatch()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userListsController.FindUserWithMovies(userId);
-            var user2 = await _userListsController.FindUserWithSeries(userId);
-
-            if (user == null)
-            {
-                return NotFound(); 
-            }
-
-            var viewModel = new HomeViewModel
-            {
-                Movies = user.MoviesToWatch.ToList(),
-                Series = user2.SeriesToWatch.ToList()
-            };
-
+            var viewModel = await _userListsService.GetUserMSLists(userId);
             return View(viewModel);
         }
 
@@ -66,22 +54,12 @@ namespace FILMEX.Controllers
             return $"{days} days, {hours} hours, {minutes} minutes";
         }
 
-        public int GetItemsReleasingTodayCount(string? userId)
+        public async Task<int> GetItemsReleasingTodayCount(string? userId)
         {
-            DateTime today = DateTime.Today;
-            DateTime now = DateTime.Now;
-            var userMovies = _userListsController.FindUserWithMoviesNotAsync(userId);
-            var userSeries = _userListsController.FindUserWithSeriesNotAsync(userId);
-
-            // Count the movies releasing today or already released
-            var movieCount = userMovies.MoviesToWatch.Count(movie => movie.PublishDate.Date == today && movie.PublishDate >= now);
-
-            // Count the series releasing today or already released
-            var seriesCount = userSeries.SeriesToWatch.Count(serie => serie.PublishDate.Date == today && serie.PublishDate >= now);
-
-            // Return the total count of movies and series releasing today or already released
-            return movieCount + seriesCount;
+            int numberOfItems = await _userListsService.GetItemsReleasingTodayCountAsync(userId);
+            return numberOfItems;
         }
+
     }
 }
     

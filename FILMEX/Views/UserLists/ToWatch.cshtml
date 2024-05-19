@@ -1,6 +1,6 @@
 ﻿@using FILMEX.Controllers
 @using FILMEX.Models
-@model FILMEX.Models.ViewModels.HomeViewModel
+@model ToWatchViewModel
 @{
     ViewData["Title"] = "FilmsToWatch";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -20,7 +20,7 @@
         {
             <tr>
                 <td>@movie.Title</td>
-                <td>@UserListsController.GetRemainingTime(movie.PublishDate)</td>
+                <td>@movie.TimeUntilRelease</td>
                 <td>
                     <form asp-controller="Movie" asp-action="RemoveFromWatchList" method="post">
                         <input type="hidden" name="MovieId" value="@movie.Id" />
@@ -33,7 +33,7 @@
         {
             <tr>
                 <td>@serie.Title</td>
-                <td>@UserListsController.GetRemainingTime(serie.PublishDate)</td>
+                <td>@serie.TimeUntilRelease</td>
                 <td>
                     <form asp-controller="Series" asp-action="RemoveFromWatchList" method="post">
                         <input type="hidden" name="SerieId" value="@serie.Id" />

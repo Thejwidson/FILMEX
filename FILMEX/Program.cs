@@ -7,6 +7,7 @@ using FILMEX.Models.Entities;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Controllers;
 using FILMEX.Repos;
+using FILMEX.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -23,6 +24,7 @@ builder.Services.AddScoped<SeriesRepository>();
 builder.Services.AddScoped<HomeRepository>();
 builder.Services.AddScoped<MovieCategoryRepository>();
 builder.Services.AddScoped<UserListsRepository>();
+builder.Services.AddScoped<UserListsService>();
 builder.Services.AddScoped<UserListsController>();
 // ---
 builder.Services.AddControllersWithViews();
