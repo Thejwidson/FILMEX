@@ -136,7 +136,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, Models.Movie movie)
+        public async Task<IActionResult> Edit(int id, Models.Movie movie, List<int> SelectedCategories)
         {
             if (id != movie.Id) return NotFound();
 
