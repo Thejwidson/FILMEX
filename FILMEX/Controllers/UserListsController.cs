@@ -15,12 +15,10 @@ namespace FILMEX.Controllers
 {
     public class UserListsController : Controller
     {
-        private readonly IUserListsController _userListsController;
         private readonly IUserListsService _userListsService;
 
-        public UserListsController(UserListsRepository userListsController, UserListsService userListsService)
+        public UserListsController(UserListsService userListsService)
         {
-            _userListsController = userListsController;
             _userListsService = userListsService;
         }
 
@@ -37,21 +35,6 @@ namespace FILMEX.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var viewModel = await _userListsService.GetUserMSLists(userId);
             return View(viewModel);
-        }
-
-        public static string GetRemainingTime(DateTime releaseDate)
-        {
-            TimeSpan remainingTime = releaseDate - DateTime.Now;
-
-            if (remainingTime.TotalMilliseconds <= 0){
-                return "Released";
-            }
-
-            int days = (int)remainingTime.TotalDays;
-            int hours = remainingTime.Hours;
-            int minutes = remainingTime.Minutes;
-
-            return $"{days} days, {hours} hours, {minutes} minutes";
         }
 
         public async Task<int> GetItemsReleasingTodayCount(string? userId)
