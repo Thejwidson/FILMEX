@@ -18,6 +18,7 @@ namespace FILMEX.Data
         public DbSet<ReviewMovie> ReviewsMovie { get; set; }
         public DbSet<ReviewSeries> ReviewsSeries { get; set; }
         public DbSet<MovieCategory> MoviesCategories { get; set; }
+        public DbSet<SeriesCategory> SeriesCategories { get; set; }
         public DbSet<User> Users {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

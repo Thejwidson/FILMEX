@@ -147,5 +147,10 @@ namespace FILMEX.Repos
             user.SeriesToWatch.Remove(serie);
             await _context.SaveChangesAsync();
         }
+
+        public void LoadCategoryRelations(Series series)
+        {
+            _context.Entry(series).Collection(m => m.Categories).Load();
+        }
     }
 }

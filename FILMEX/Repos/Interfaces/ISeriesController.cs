@@ -41,5 +41,6 @@ namespace FILMEX.Repos.Interfaces
         // SeriesToWatch
         Task AddSerieToWatch(Series serie, User user);
         Task RemoveSerieToWatch(Series serie, User user);
+        void LoadCategoryRelations(Series series);
     }
 }

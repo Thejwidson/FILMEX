@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
 using System.Globalization;
+using FILMEX.Repos.Repositories;
 using FILMEX.Repos.Interfaces;
 using System.Xml.Linq;
 using FILMEX.Repos;
@@ -97,6 +98,7 @@ namespace FILMEX.Controllers
                     if (category != null)
                     {
                         movieEntity.Categories.Add(category);
+                        _categoryRepository.AddMovieToCategory(movieEntity, categoryIterator); // Tutaj coś może się lekko pieprzyć jezeli dodajemy kopię filmu a nie referencję
                     }
                 }
 
@@ -105,7 +107,6 @@ namespace FILMEX.Controllers
             }
             return View(movie);
         }
-
 
         // GET: Movie/Edit/
         [Authorize(Roles = "Admin")]
@@ -125,8 +126,11 @@ namespace FILMEX.Controllers
                 PublishDate = movieEntity.PublishDate,
                 Director = movieEntity.Director,
                 Screenwriter = movieEntity.Screenwriter,
-                Location = movieEntity.Location
+                Location = movieEntity.Location,
+                Categories = _categoryRepository.GetAllMovieCategoriesByMovieID(movieEntity.Id)
             };
+
+            ViewBag.Categories = _categoryRepository.GetAllCategories();
 
             return View(movieModel);
         }
@@ -163,6 +167,23 @@ namespace FILMEX.Controllers
                     await movie.CoverImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create)); // upload zdjecia
 
                     movieEntity.AttachmentSource = folder; // przypisanie sciezki do filmu w bazie danych
+                }
+
+                // Usunięcie movie ze wszystkich kategorii
+                foreach (var category in _categoryRepository.GetAllMovieCategoriesByMovieID(movie.Id))
+                {
+                    _categoryRepository.DeleteMovieFromCategory(movie.Id, category.Id);
+                }
+
+                // Dodanie movie do kategorii z SelectedCategories
+                foreach (var categoryIterator in SelectedCategories)
+                {
+                    var category = _categoryRepository.GetCategoryById(categoryIterator);
+                    if (category != null)
+                    {
+                        movieEntity.Categories.Add(category);
+                        _categoryRepository.AddMovieToCategory(movieEntity, categoryIterator);
+                    }
                 }
 
                 // update w bazie danych
@@ -310,7 +331,7 @@ namespace FILMEX.Controllers
             {
                 _movieRepository.LoadCommentRelations(comment);
             }
-            
+
             _movieRepository.LoadCategoryRelations(movie);
 
             return View(movie);
@@ -368,7 +389,7 @@ namespace FILMEX.Controllers
                 return NotFound();
             }
 
-            var movieToWatch = user.MoviesToWatch.FirstOrDefault(m =>m.Id == movie.Id);
+            var movieToWatch = user.MoviesToWatch.FirstOrDefault(m => m.Id == movie.Id);
 
             if (movieToWatch == null)
             {
