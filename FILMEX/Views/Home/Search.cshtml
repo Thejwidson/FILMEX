@@ -72,16 +72,6 @@
 
 <hr />
 <h2>Actors:</h2>
-@if (Model.Actors.Any())
-{
-    <ul>
-        @foreach (var actor in Model.Actors)
-        {
-
-            <li>@actor.Name</li>
-        }
-    </ul>
-}
 else
 {
     <p>No Search Results Found</p>

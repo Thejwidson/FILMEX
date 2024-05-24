@@ -14,8 +14,6 @@ namespace FILMEX.Models.Entities
 
         public DateTime PublishDate { get; set; }
 
-        public List<Actor> Actors { get; set; } = new List<Actor>();
-
         public string Director { get; set; } = String.Empty;
         public string Screenwriter { get; set; } = String.Empty;
 

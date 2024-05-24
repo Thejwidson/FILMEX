@@ -22,13 +22,6 @@ namespace FILMEX.Repos
             return _context.Series.ToList();
         }
 
-        public List<Actor> SearchActors(string searchPhrase)
-        {
-            return _context.Actors
-                .Where(a => a.Name.Contains(searchPhrase) || a.LastName.Contains(searchPhrase))
-                .ToList();
-        }
-
         public List<Movie> SearchMovies(string searchPhrase)
         {
             return _context.Movies

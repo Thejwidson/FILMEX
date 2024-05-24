@@ -1,12 +1,7 @@
 using FILMEX.Models.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using FILMEX.Models;
-using FILMEX.Models.Entities;
-using FILMEX.Data;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Repos;
 using FILMEX.Repos.Repositories;
@@ -50,7 +45,6 @@ namespace FILMEX.Controllers
         {
             var viewModel = new SearchViewModel
             {
-                Actors = _homeController.SearchActors(searchPhrase),
                 Movies = _homeController.SearchMovies(searchPhrase),
                 Series = _homeController.SearchSeries(searchPhrase)
             };

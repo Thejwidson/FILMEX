@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using FILMEX.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using FILMEX.Models.Entities;
-using Microsoft.AspNetCore.Hosting;
-using FILMEX.Models;
-using static NuGet.Packaging.PackagingConstants;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Primitives;
 using System.Globalization;
-using FILMEX.Repos.Repositories;
 using FILMEX.Repos.Interfaces;
-using System.Xml.Linq;
 using FILMEX.Repos;
 
 namespace FILMEX.Controllers

@@ -1,15 +1,7 @@
-﻿using FILMEX.Data;
-using FILMEX.Models;
-using FILMEX.Models.Entities;
-using FILMEX.Models.ViewModels;
-using FILMEX.Repos;
-using FILMEX.Repos.Interfaces;
-using FILMEX.Services.Interfaces;
+﻿using FILMEX.Services.Interfaces;
 using FILMEX.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Movie = FILMEX.Models.Entities.Movie;
 
 namespace FILMEX.Controllers
 {

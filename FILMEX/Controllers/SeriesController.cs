@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FILMEX.Data;
 using FILMEX.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using FILMEX.Models;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 using System.Globalization;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Repos;
