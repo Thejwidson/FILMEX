@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using FILMEX.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using FILMEX.Models.Entities;
-using FILMEX.Repos.Interfaces;
 using FILMEX.Controllers;
 using FILMEX.Repos;
 using FILMEX.Services;

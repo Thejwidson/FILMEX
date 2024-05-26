@@ -1,8 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace FILMEX.Models.Entities
+﻿namespace FILMEX.Models.Entities
 {
     public abstract class Production
     {

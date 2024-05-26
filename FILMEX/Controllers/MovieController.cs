@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
 using FILMEX.Repos.Interfaces;
 using FILMEX.Repos;
+using FILMEX.Services.Interfaces;
 
 namespace FILMEX.Controllers
 {
@@ -13,12 +14,14 @@ namespace FILMEX.Controllers
         private readonly IMovieController _movieRepository;
         private readonly IMovieCategoryController _categoryRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IMovieService _movieService;
 
-        public MovieController(MovieRepository movieRepository, MovieCategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironemt)
+        public MovieController(MovieRepository movieRepository, MovieCategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironemt, IMovieService movieService)
         {
             _movieRepository = movieRepository;
             _categoryRepository = categoryRepository;
             _webHostEnvironment = webHostEnvironemt;
+            _movieService = movieService;
         }
 
         // GET: Movie
@@ -85,7 +88,7 @@ namespace FILMEX.Controllers
                     if (category != null)
                     {
                         movieEntity.Categories.Add(category);
-                        _categoryRepository.AddMovieToCategory(movieEntity, categoryIterator); // Tutaj coś może się lekko pieprzyć jezeli dodajemy kopię filmu a nie referencję
+                        _categoryRepository.AddMovieToCategory(movieEntity, categoryIterator); // Tutaj coś może się lekko psuć jezeli dodajemy kopię filmu a nie referencję
                     }
                 }
 

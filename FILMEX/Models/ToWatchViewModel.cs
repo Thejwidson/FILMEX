@@ -1,7 +1,4 @@
-﻿using FILMEX.Models.Entities;
-using System.Collections.Generic;
-
-namespace FILMEX.Models
+﻿namespace FILMEX.Models
 {
     public class ToWatchViewModel
     {

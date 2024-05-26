@@ -1,5 +1,4 @@
 ﻿using FILMEX.Models.Entities;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FILMEX.Repos.Interfaces
 {

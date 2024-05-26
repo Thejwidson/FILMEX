@@ -1,10 +1,6 @@
 ﻿using FILMEX.Data;
 using FILMEX.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace FILMEX.Repos
 {

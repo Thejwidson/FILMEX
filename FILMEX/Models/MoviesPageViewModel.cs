@@ -2,6 +2,6 @@
 {
     public class MoviesPageViewModel
     {
-        public List<FILMEX.Models.Entities.Movie> Movies { get; set; } = new List<FILMEX.Models.Entities.Movie>();
+        public List<Entities.Movie> Movies { get; set; } = new List<Entities.Movie>();
     }
 }

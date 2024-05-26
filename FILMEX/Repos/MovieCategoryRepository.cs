@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FILMEX.Data;
+﻿using FILMEX.Data;
 using FILMEX.Models.Entities;
 using FILMEX.Repos.Interfaces;
 

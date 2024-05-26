@@ -1,5 +1,4 @@
 ﻿using FILMEX.Data;
-using FILMEX.Models;
 using FILMEX.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 

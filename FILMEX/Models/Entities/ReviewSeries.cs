@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FILMEX.Models.Entities
+﻿namespace FILMEX.Models.Entities
 {
     public class ReviewSeries : Review
     {
