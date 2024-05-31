@@ -1,5 +1,4 @@
 ﻿using FILMEX.Models.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +39,5 @@ namespace FILMEX.Data
 
             base.OnModelCreating(modelBuilder);
         }
-
     }
 }
