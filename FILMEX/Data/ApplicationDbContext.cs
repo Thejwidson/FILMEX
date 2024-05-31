@@ -41,12 +41,5 @@ namespace FILMEX.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=FILMEX;Trusted_Connection=True");
-            base.OnConfiguring(optionsBuilder);
-        }*/
-        //Nie ruszajcie na razie, nie pytajcie czemu bo sam nie wiem ~Dawidzior
-
     }
 }

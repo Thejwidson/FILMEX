@@ -55,33 +55,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-//ogarnac czemu nie dziala seedowanie
 
-/*using(var scope = app.Services.CreateScope())
-{
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<
->>();
-
-    string email = "Admin@admin123.com";
-    string pwd = "Admin@admin123.com";
-
-    if(await userManager.FindByEmailAsync(email) == null)
-    {
-        var adminUser = new User();
-        adminUser.UserName = "Admin";
-        adminUser.FirstName = "Admin";
-        adminUser.LastName = "Admin";
-        adminUser.Email = email;
-        adminUser.EmailConfirmed = true;
-        
-        
-
-        await userManager.CreateAsync(adminUser,pwd);
-
-        await userManager.AddToRoleAsync(adminUser, "Admin");
-    }
-
-}*/
 
 // Seed the database with initial data
 using (var scope = app.Services.CreateScope())
