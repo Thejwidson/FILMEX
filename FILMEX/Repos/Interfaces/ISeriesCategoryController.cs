@@ -9,6 +9,8 @@ namespace FILMEX.Repos.Interfaces
         void AddCategory(SeriesCategory category);
         void UpdateCategory(SeriesCategory category);
         void AddSeriesToCategory(Series series, int categoryId);
+        void DeleteSeriesFromCategory(int seriesId, int categoryId);
+        List<SeriesCategory> GetAllSeriesCategoriesBySeriesID(int seriesId);
         void DeleteCategory(int id);
     }
 }

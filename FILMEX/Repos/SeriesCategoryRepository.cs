@@ -40,6 +40,36 @@ namespace FILMEX.Repos.Repositories
             _context.SeriesCategories.FirstOrDefault(c => c.Id == categoryId).Series.Add(series);
         }
 
+        public void DeleteSeriesSeriesFromAllCategories(int seriesId)
+        {
+            var categories = _context.SeriesCategories.Where(c => c.Series.Any(m => m.Id == seriesId)).ToList();
+            foreach (var category in categories)
+            {
+                var series = category.Series.FirstOrDefault(m => m.Id == seriesId);
+                if (series != null)
+                {
+                    category.Series.Remove(series);
+                }
+            }
+            _context.SaveChanges();
+        }
+
+        public void DeleteSeriesFromCategory(int seriesId, int categoryId)
+        {
+            var category = _context.SeriesCategories.FirstOrDefault(c => c.Id == categoryId);
+            var series = category.Series.FirstOrDefault(m => m.Id == seriesId);
+            if (series != null)
+            {
+                category.Series.Remove(series);
+                _context.SaveChanges();
+            }
+        }
+
+        public List<SeriesCategory> GetAllSeriesCategoriesBySeriesID(int seriesId)
+        {
+            return _context.SeriesCategories.Where(c => c.Series.Any(m => m.Id == seriesId)).ToList();
+        }
+
         public void DeleteCategory(int id)
         {
             var category = _context.SeriesCategories.FirstOrDefault(c => c.Id == id);

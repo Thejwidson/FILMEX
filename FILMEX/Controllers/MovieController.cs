@@ -14,14 +14,12 @@ namespace FILMEX.Controllers
         private readonly IMovieController _movieRepository;
         private readonly IMovieCategoryController _categoryRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IMovieService _movieService;
 
-        public MovieController(MovieRepository movieRepository, MovieCategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironemt, IMovieService movieService)
+        public MovieController(MovieRepository movieRepository, MovieCategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironemt)
         {
             _movieRepository = movieRepository;
             _categoryRepository = categoryRepository;
             _webHostEnvironment = webHostEnvironemt;
-            _movieService = movieService;
         }
 
         // GET: Movie

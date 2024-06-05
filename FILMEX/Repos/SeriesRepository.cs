@@ -41,7 +41,7 @@ namespace FILMEX.Repos
         public async Task Update(Series series)
         {
             _context.Update(series);
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
         }
 
         public async Task Remove(Series series)
@@ -149,7 +149,7 @@ namespace FILMEX.Repos
 
         public void LoadCategoryRelations(Series series)
         {
-            _context.Entry(series).Collection(m => m.Categories).Load();
+            _context.Entry(series).Collection(s => s.Categories).Load();
         }
     }
 }

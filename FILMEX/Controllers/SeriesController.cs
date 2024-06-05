@@ -130,6 +130,9 @@ namespace FILMEX.Controllers
                 Screenwriter = series.Screenwriter,
                 Location = series.Location
             };
+
+            ViewBag.Categories = _categoryRepository.GetAllCategories();
+
             return View(seriesModel);
         }
 
@@ -139,7 +142,7 @@ namespace FILMEX.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, SeriesModel seriesModel)
+        public async Task<IActionResult> Edit(int id, SeriesModel seriesModel, List<int> SelectedCategories)
         {
             if (id != seriesModel.Id)
             {
@@ -174,7 +177,26 @@ namespace FILMEX.Controllers
 
                         seriesEntity.AttachmentSource = folder;
                     }
-                    await _seriesRepository.Update(seriesEntity);
+
+                    // Usunięcie movie ze wszystkich kategorii
+                    foreach (var category in _categoryRepository.GetAllSeriesCategoriesBySeriesID(seriesModel.Id))
+                    {
+                        _categoryRepository.DeleteSeriesFromCategory(seriesModel.Id, category.Id);
+                    }
+
+                    // Dodanie movie do kategorii z SelectedCategories
+                    foreach (var categoryIterator in SelectedCategories)
+                    {
+                        var category = _categoryRepository.GetCategoryById(categoryIterator);
+                        if (category != null)
+                        {
+                            seriesEntity.Categories.Add(category);
+                            _categoryRepository.AddSeriesToCategory(seriesEntity, categoryIterator);
+                        }
+                    }
+
+                    // update w bazie danych
+                    _seriesRepository.Update(seriesEntity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -195,17 +217,11 @@ namespace FILMEX.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var series = await _seriesRepository.FindById(id);
 
-            if (series == null)
-            {
-                return NotFound();
-            }
+            if (series == null) return NotFound();
 
             return View(series);
         }
